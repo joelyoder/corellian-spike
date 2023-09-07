@@ -11,6 +11,7 @@
 <body>
   <h1>Corellian Spike</h1>
 
+  <a href="javascript:void(0)" class="btn" onclick="newGame()">New Game</a>
   <p>Current Turn
     <strong>
       <div class="currentTurn">Player 1</div>
@@ -25,9 +26,8 @@
   <br />
 
   <h2>The Deck</h2>
-  <h3>Drawn Card</h3>
-  <div class="drawnCard">0</div>
-  <button>Keep</button> <button>Discard</button>
+
+  <div id="deck"></div>
 
   <div>Discard Pile: <div id="discardPile">0</div>
   </div>
