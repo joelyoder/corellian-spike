@@ -10,6 +10,59 @@
 
 <body>
   <h1>Corellian Spike</h1>
+
+  <p>Current Turn
+    <strong>
+      <div class="currentTurn">Player 1</div>
+    </strong>
+  </p>
+
+  <h2>Glittering Spoils</h2>
+  <div>Game Pot: <div id="gamePot">0</div>
+  </div>
+  <div>Sabacc Pot: <div id="sabaccPot ">0</div>
+  </div>
+  <br />
+
+  <h2>The Deck</h2>
+  <h3>Drawn Card</h3>
+  <div class="drawnCard">0</div>
+  <button>Keep</button> <button>Discard</button>
+
+  <div>Discard Pile: <div id="discardPile">0</div>
+  </div>
+
+  <h2>Drawing</h2>
+  <button>Stand</button>
+  <button>Draw From Pile (-1 Credit)</button>
+  <button>Swap From Pile (-1 Credit)</button>
+  <button>Swap From Discard (-2 Credits)</button>
+
+  <h2>Betting</h2>
+  <div>Player 1 Credits: <div id="player1Credits">0</div>
+  </div>
+  <div>Player 2 Credits: <div id="player2Credits">0</div>
+  </div>
+  <div>Current Bet: <div id="currentBet">0</div>
+  </div>
+  <input type="number" placeholder="Betting Amount"><br />
+  <button id="check">Check</button>
+  <button id="bet">Bet</button>
+  <button id="call">Call</button>
+  <button id="raise">Raise</button>
+  <button id="junk">Junk</button>
+  <button id="allIn">ALL IN</button>
+  <br />
+
+  <h2>Player 1 Hand</h2>
+  <ul class="hand">
+    <li class="card"></li>
+  </ul>
+  <h2>Player 2 Hand</h2>
+  <ul class="hand">
+    <li class="card"></li>
+  </ul>
+
   <script src="script.js"></script>
 </body>
 
