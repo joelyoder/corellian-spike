@@ -44,7 +44,7 @@ function newGame() {
     // Set up the players
     for (let i = 0; i < playerCount; i++) {
         // Create the players array that tracks their stats and give them the starting credits
-        players[i] = {Hand:new Array(), Credits:startingCredits};
+        players[i] = {Hand:new Array(), Credits:startingCredits, LastBet:0};
     }
     
     newDeal();
@@ -103,7 +103,8 @@ function updateGameUI() {
             document.getElementById('currentStage').innerText = 'Error';
     }
 
-    renderHands();
+    renderDeck();
+    renderHand();
 }
 
 function renderCreditTracker() {
@@ -118,44 +119,40 @@ function renderCreditTracker() {
     }
 }
 
-function renderHands() {
+function renderHand() {
     // Reset the hands
-    document.getElementById('hands').innerHTML = '';
+    document.getElementById('hand').innerHTML = '';
 
     // Set up the credit tracker UI
-    for (let i = 0; i < playerCount; i++) {
-        let heading = document.createElement('h2');
-        heading.innerText = `Player ${i + 1} Hand`;
+    let heading = document.createElement('h2');
+    heading.innerText = `Player ${currentPlayer + 1} Hand`;
 
-        let container = document.createElement('div');
-        container.className = "container";
+    let container = document.createElement('div');
+    container.className = `container`;
 
-        console.log(players[i].Hand.length);
+    for (let x = 0; x < players[currentPlayer].Hand.length; x++) {
+        let cardType;
 
-        for (let x = 0; x < (players[i].Hand.length); i++) {
-            let cardType;
-
-            if (players[i].Hand[x].Value > 0) {
-                cardType = "pos";
-            } else if (isNegative(players[i].Hand[x].Value)) {
-                cardType = "neg";
-            } else {
-                cardType = "";
-            }
-
-            let card = document.createElement('div');
-            let value = document.createElement('div');
-            card.className = "card " + players[i].Hand[x].Stave + " " + cardType;
-            value.className = "value";
-
-            value.innerText = players[i].Hand[x].Value;
-            card.appendChild(value);
-            container.appendChild(card);
+        if (players[currentPlayer].Hand[x].Value > 0) {
+            cardType = "pos";
+        } else if (isNegative(players[currentPlayer].Hand[x].Value)) {
+            cardType = "neg";
+        } else {
+            cardType = "";
         }
 
-        document.getElementById('hands').appendChild(heading);
-        document.getElementById('hands').appendChild(container);
+        let card = document.createElement('div');
+        let value = document.createElement('div');
+        card.className = "card " + players[currentPlayer].Hand[x].Stave + " " + cardType;
+        value.className = "value";
+
+        value.innerText = players[currentPlayer].Hand[x].Value;
+        card.appendChild(value);
+        container.appendChild(card);
     }
+
+    document.getElementById('hand').appendChild(heading);
+    document.getElementById('hand').appendChild(container);
 }
 
 // Turn Taking
@@ -167,6 +164,19 @@ function nextPlayer() {
     if (currentPlayer === playerCount) {
         currentPlayer = 0;
         currentStage++;
+    }
+
+    if(currentStage === 1) {
+        document.getElementById("drawing").style.display = "block";
+        document.getElementById("betting").style.display = "none";
+    } else if(currentStage === 2) {
+        document.getElementById("betting").style.display = "block";
+        document.getElementById("drawing").style.display = "none";
+    } else if(currentStage === 3) {
+        document.getElementById("drawing").style.display = "none";
+        document.getElementById("betting").style.display = "none";
+    } else {
+        // Do nothing
     }
 
     // At the end of the final stage, roll the spike and move to the next round

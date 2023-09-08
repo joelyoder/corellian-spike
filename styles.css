@@ -1,16 +1,9 @@
 #deck,
-.hand,
+#discard,
 .container {
     padding: 1em;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-}
-
-#discard {
-    padding: 1em;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-    justify-content: center;
 }
 
 .card {

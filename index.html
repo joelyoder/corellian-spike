@@ -7,19 +7,20 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Corellian Spike</title>
   <link rel="stylesheet" href="styles.css">
+  <!--<script src="https://cdn.tailwindcss.com"></script>-->
 </head>
 
 <body>
   <h1>Corellian Spike</h1>
 
-  <a href="javascript:void(0)" class="btn" onclick="newGame()">Reset Game</a>
-  <a href="javascript:void(0)" class="btn" onclick="endGame()">Game End</a>
+  <button onclick="newGame()">Reset Game</button>
+  <button onclick="endGame()">Game End</button>
   <p>
     Round <span id="currentRound"></span><br />
     <span id="currentStage"></span> Stage<br />
     Player <span id="currentPlayer"></span>'s Turn
   </p>
-  <a href="javascript:void(0)" class="btn" onclick="stand()">Stand</a>
+  <button onclick="stand()">Stand</button>
 
   <h2>Glittering Spoils</h2>
   <div>Game Pot: <div id="gamePot">0</div>
@@ -34,26 +35,29 @@
   <h3>Discard Pile</h3>
   <div id="discard"></div>
 
-  <h2>Drawing</h2>
-  <a href="javascript:void(0)" class="btn" onclick="stand()">Stand</a>
-  <a href="javascript:void(0)" class="btn" onclick="drawFromPile()">Draw From Pile (-1 Credit)</a>
-  <button>Swap From Pile (-1 Credit)</button>
-  <button>Swap From Discard (-2 Credits)</button>
-
-  <h2>Betting</h2>
-  <ul id="creditTracker"></ul>
-  <div>Current Bet: <div id="currentBet"></div>
+  <div id="drawing">
+    <h2>Drawing</h2>
+    <button onclick="stand()">Stand</button>
+    <button onclick="drawFromPile()">Draw From Pile (-1 Credit)</button>
+    <button>Swap From Pile (-1 Credit)</button>
+    <button>Swap From Discard (-2 Credits)</button>
   </div>
-  <input type="number" placeholder="Betting Amount"><br />
-  <button id="check">Check</button>
-  <button id="bet">Bet</button>
-  <button id="call">Call</button>
-  <button id="raise">Raise</button>
-  <button id="junk">Junk</button>
-  <button id="allIn">ALL IN</button>
-  <br />
 
-  <div id="hands"></div>
+  <div id="betting">
+    <h2>Betting</h2>
+    <ul id="creditTracker"></ul>
+    <div>Current Bet: <div id="currentBet"></div>
+    </div>
+    <input type="number" placeholder="Betting Amount"><br />
+    <button onclick="check()">Check</button>
+    <button id="bet">Bet</button>
+    <button id="call">Call</button>
+    <button id="raise">Raise</button>
+    <button id="junk">Junk</button>
+    <button id="allIn">ALL IN</button>
+  </div>
+
+  <div id="hand"></div>
 
   <script src="script.js"></script>
 </body>
