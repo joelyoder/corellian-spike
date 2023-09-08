@@ -105,6 +105,19 @@ function updateGameUI() {
 
     renderDeck();
     renderHand();
+
+    if(currentStage === 1) {
+        document.getElementById("drawing").style.display = "block";
+        document.getElementById("betting").style.display = "none";
+    } else if(currentStage === 2) {
+        document.getElementById("betting").style.display = "block";
+        document.getElementById("drawing").style.display = "none";
+    } else if(currentStage === 3) {
+        document.getElementById("drawing").style.display = "none";
+        document.getElementById("betting").style.display = "none";
+    } else {
+        // Do nothing
+    }
 }
 
 function renderCreditTracker() {
@@ -164,19 +177,6 @@ function nextPlayer() {
     if (currentPlayer === playerCount) {
         currentPlayer = 0;
         currentStage++;
-    }
-
-    if(currentStage === 1) {
-        document.getElementById("drawing").style.display = "block";
-        document.getElementById("betting").style.display = "none";
-    } else if(currentStage === 2) {
-        document.getElementById("betting").style.display = "block";
-        document.getElementById("drawing").style.display = "none";
-    } else if(currentStage === 3) {
-        document.getElementById("drawing").style.display = "none";
-        document.getElementById("betting").style.display = "none";
-    } else {
-        // Do nothing
     }
 
     // At the end of the final stage, roll the spike and move to the next round
