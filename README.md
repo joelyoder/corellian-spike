@@ -18,8 +18,8 @@
 ### Drawing Phase
 - [x] Standing
 - [x] Drawing a card from the deck and chosing to keep or discard that card
-- [ ] Discarding from your hand and drawing from the deck
-- [ ] Discarding from your hand and drawing from the discard
+- [x] Discarding from your hand and drawing from the deck
+- [x] Discarding from your hand and drawing from the discard
 
 ### Betting Phase
 - [x] Standing

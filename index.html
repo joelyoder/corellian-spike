@@ -21,6 +21,8 @@
     Player <span id="currentPlayer"></span>'s Turn
   </p>
 
+  <ul id="creditTracker"></ul>
+
   <h2>Glittering Spoils</h2>
   <div>Game Pot: <div id="gamePot">0</div>
   </div>
@@ -40,12 +42,11 @@
     <button onclick="stand()">Stand</button>
     <button onclick="drawFromPile()">Draw From Pile (-1 Credit)</button>
     <button onclick="swapFromPile()">Swap From Pile (-1 Credit)</button>
-    <button>Swap From Discard (-2 Credits)</button>
+    <button onclick="swapFromDiscard()">Swap From Discard (-2 Credits)</button>
   </div>
 
   <div id="betting">
     <h2>Betting</h2>
-    <ul id="creditTracker"></ul>
     <div>Current Bet: <div id="currentBet"></div>
     </div>
     <input type="number" placeholder="Betting Amount"><br />

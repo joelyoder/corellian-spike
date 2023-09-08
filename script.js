@@ -81,6 +81,7 @@ function updateGameUI() {
     document.getElementById('gamePot').innerText = gamePot;
     document.getElementById('sabaccPot').innerText = sabaccPot;
     document.getElementById('currentBet').innerText = currentBet;
+
     renderCreditTracker();
 
     // Game State
@@ -100,12 +101,14 @@ function updateGameUI() {
             
             break;
         default:
+            // If you see this, something has gone wrong
             document.getElementById('currentStage').innerText = 'Error';
     }
 
     renderDeck();
     renderHand();
 
+    // Determine visibility of drawing and betting controls
     if(currentStage === 1) {
         document.getElementById("drawing").style.display = "block";
         document.getElementById("betting").style.display = "none";
@@ -317,8 +320,8 @@ function newDeal() {
     resetDeck();
 
     // Deal 2 cards to each player
-    for (let p = 0; p < playerCount; p++) {
-        players[p].Hand.push(...dealCards(2));
+    for (let i = 0; i < playerCount; i++) {
+        players[i].Hand.push(...dealCards(2));
     }
 
     // Discard the top card of the deck
@@ -329,17 +332,17 @@ function reDeal() {
     let handSizes = new Array();
 
     // Pull the current number of cards from each player
-    for (let p = 0; p < playerCount; p++) {
+    for (let x = 0; x < playerCount; x++) {
 
         // Pull the number of cards that are in their hand
-        let playerHand = players[p].Hand
+        let playerHand = players[x].Hand
         let handSize = Object.keys(playerHand).length;
 
         // Store that in our array
         handSizes.push(handSize);
 
         // Empty their hand
-        players[p] = {Hand:new Array()};
+        players[x] = {Hand:new Array()};
     }
 
     console.log("All player data before reset: ", players);
@@ -347,12 +350,12 @@ function reDeal() {
 
     resetDeck();
 
-    for (let p = 0; p < playerCount; p++) {
+    for (let i = 0; i < playerCount; i++) {
         // Pull their number of cards out of our array
         let newHand = handSizes.pop();
 
         // Deal them the same number of cards from the fresh desk
-        players[p].Hand.push(...dealCards(newHand));
+        players[i].Hand.push(...dealCards(newHand));
     }
 
     console.log("All player data after reset: ", players);
@@ -399,23 +402,39 @@ function swapFromPile() {
     spendGamePot(currentPlayer, 1);
 
     // Take a chosen card from their hand and discard it
-    console.log(pullFromHand());
-    //discardCard(pullFromHand());
+    discardCard(...pullFromHand());
 
     // Add a new card to the player's hand
     players[currentPlayer].Hand.push(...dealCards(1));
+
+    // Let the player know what card they picked up, since their hand is about to disappear
+    let latestCard = players[currentPlayer].Hand.length - 1;
+    alert(`You pick up a ${players[currentPlayer].Hand[latestCard].Value}`);
 
     nextPlayer();
 }
 
 function swapFromDiscard() {
+    // Spend 2 credits
+    spendGamePot(currentPlayer, 2);
+
+    // Yoink the top card in the discard pile
+    let pickedUpCard = discard.pop();
+
+    console.log(pickedUpCard);
+
+    // Take a chosen card from their hand and discard it
+    discardCard(...pullFromHand());
+
+    // Add the picked up card to the player's hand
+    players[currentPlayer].Hand.push(pickedUpCard);
 
     nextPlayer();
 }
 
 function pullFromHand() {
     // Prompt until they give a valid number
-    let cardNumber = loopUntilCorrectNumber(`Discard a card from your hand. Choose a number between 1-${players[currentPlayer].Hand.length + 1} based on hand order.`, players[currentPlayer].Hand.length);
+    let cardNumber = loopUntilCorrectNumber(`Discard a card from your hand. Choose a number between 1-${players[currentPlayer].Hand.length} based on hand order.`, players[currentPlayer].Hand.length);
 
     cardNumber--;
 
