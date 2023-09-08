@@ -472,3 +472,13 @@ function isNegative(num) {
 
     return false;
 }
+
+function showHide(id, display){
+    let e = document.getElementById(id);
+
+    if ( e.style.display !== 'none' ) {
+        e.style.display = 'none';
+    } else {
+        e.style.display = display;
+    }
+}

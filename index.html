@@ -20,7 +20,6 @@
     <span id="currentStage"></span> Stage<br />
     Player <span id="currentPlayer"></span>'s Turn
   </p>
-  <button onclick="stand()">Stand</button>
 
   <h2>Glittering Spoils</h2>
   <div>Game Pot: <div id="gamePot">0</div>
@@ -30,7 +29,8 @@
   <br />
 
   <h2>The Deck</h2>
-  <div id="deck"></div>
+  <button onclick="showHide('deck', 'grid')">Show the Deck</button>
+  <div id="deck" style="display: none;"></div>
 
   <h3>Discard Pile</h3>
   <div id="discard"></div>
