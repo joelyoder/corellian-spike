@@ -395,6 +395,15 @@ function drawFromPile() {
 }
 
 function swapFromPile() {
+    // Spend 1 credit
+    spendGamePot(currentPlayer, 1);
+
+    // Take a chosen card from their hand and discard it
+    console.log(pullFromHand());
+    //discardCard(pullFromHand());
+
+    // Add a new card to the player's hand
+    players[currentPlayer].Hand.push(...dealCards(1));
 
     nextPlayer();
 }
@@ -402,6 +411,19 @@ function swapFromPile() {
 function swapFromDiscard() {
 
     nextPlayer();
+}
+
+function pullFromHand() {
+    // Prompt until they give a valid number
+    let cardNumber = loopUntilCorrectNumber(`Discard a card from your hand. Choose a number between 1-${players[currentPlayer].Hand.length + 1} based on hand order.`, players[currentPlayer].Hand.length);
+
+    cardNumber--;
+
+    //Yoink the card out of their hand
+    let chosenCard = players[currentPlayer].Hand.splice(cardNumber, 1);
+
+    // Return the card
+    return chosenCard;
 }
 
 // Spending Functions
@@ -482,3 +504,16 @@ function showHide(id, display){
         e.style.display = display;
     }
 }
+
+function loopUntilCorrectNumber(promptQuestion, maxValue) {
+    let retval;
+    while (true) {
+      retval = (prompt(promptQuestion));
+      
+      if (!isNaN(retval) && retval > 0 && retval <= maxValue) {
+        return retval;
+      }
+        
+      alert("Please enter a number");
+    }
+  }
