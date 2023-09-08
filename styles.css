@@ -1,0 +1,41 @@
+#deck,
+.hand,
+.container {
+    padding: 1em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+}
+
+#discard {
+    padding: 1em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    justify-content: center;
+}
+
+.card {
+    border: 2px solid #e7e7e7;
+    margin: .2em;
+    max-width: 15px;
+    padding: 1em .5em;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+.card.pos {
+    background-color: green;
+}
+
+.card.neg {
+    background-color: red;
+}
+
+.card.sylops {
+    background-color: blue;
+}
+
+.card .value {
+    color: white;
+    font-weight: bold;
+}

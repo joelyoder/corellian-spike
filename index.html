@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Corellian Spike</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -28,23 +29,19 @@
   <br />
 
   <h2>The Deck</h2>
-
   <div id="deck"></div>
 
-  <div>Discard Pile: <div id="discard">0</div>
-  </div>
+  <h3>Discard Pile</h3>
+  <div id="discard"></div>
 
   <h2>Drawing</h2>
   <a href="javascript:void(0)" class="btn" onclick="stand()">Stand</a>
-  <button>Draw From Pile (-1 Credit)</button>
+  <a href="javascript:void(0)" class="btn" onclick="drawFromPile()">Draw From Pile (-1 Credit)</a>
   <button>Swap From Pile (-1 Credit)</button>
   <button>Swap From Discard (-2 Credits)</button>
 
   <h2>Betting</h2>
-  <div>Player 1 Credits: <div id="player1Credits"></div>
-  </div>
-  <div>Player 2 Credits: <div id="player2Credits"></div>
-  </div>
+  <ul id="creditTracker"></ul>
   <div>Current Bet: <div id="currentBet"></div>
   </div>
   <input type="number" placeholder="Betting Amount"><br />
@@ -56,14 +53,7 @@
   <button id="allIn">ALL IN</button>
   <br />
 
-  <h2>Player 1 Hand</h2>
-  <ul class="hand">
-    <li class="card"></li>
-  </ul>
-  <h2>Player 2 Hand</h2>
-  <ul class="hand">
-    <li class="card"></li>
-  </ul>
+  <div id="hands"></div>
 
   <script src="script.js"></script>
 </body>

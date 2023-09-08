@@ -43,15 +43,15 @@ function newGame() {
 
     // Set up the players
     for (let i = 0; i < playerCount; i++) {
+        // Create the players array that tracks their stats and give them the starting credits
         players[i] = {Hand:new Array(), Credits:startingCredits};
     }
-
-    updateGameUI();
-
+    
     newDeal();
     anteUp();
+    updateGameUI();
 
-    console.log('Round ' + currentRound, 'Stage ' + currentStage, 'Player ' +  currentPlayer);
+    console.log('Round ' + currentRound, 'Stage ' + currentStage, 'Player ' +  (currentPlayer + 1));
 }
 
 function endGame() {
@@ -71,49 +71,119 @@ function endGame() {
         players[i] = {Hand:new Array()};
     }
 
-    updateGameUI();
-
     newDeal();
     anteUp();
+    updateGameUI();
 }
 
 function updateGameUI() {
+    // Money
     document.getElementById('gamePot').innerText = gamePot;
     document.getElementById('sabaccPot').innerText = sabaccPot;
     document.getElementById('currentBet').innerText = currentBet;
+    renderCreditTracker();
+
+    // Game State
     document.getElementById('currentRound').innerText = currentRound;
-    document.getElementById('currentPlayer').innerText = currentPlayer;
+    document.getElementById('currentPlayer').innerText = (currentPlayer + 1);
     document.getElementById('currentRound').innerText = currentRound;
 
     switch (currentStage) {
         case 1:
             document.getElementById('currentStage').innerText = 'Draw';
-            currentStage++;
             break;
         case 2:
             document.getElementById('currentStage').innerText = 'Betting';
-            currentStage++;
             break;
         case 3:
             document.getElementById('currentStage').innerText = 'Spike';
-            currentStage = 1;
-            currentRound++;
-            rollSpike();
+            
             break;
         default:
             document.getElementById('currentStage').innerText = 'Error';
+    }
+
+    renderHands();
+}
+
+function renderCreditTracker() {
+    // Reset the credit tracker
+    document.getElementById('creditTracker').innerHTML = '';
+
+    // Set up the credit tracker UI
+    for (let i = 0; i < playerCount; i++) {
+        let playerCreditTracker = document.createElement('li');
+        playerCreditTracker.innerText = `Player ${i + 1} Credits: ` + players[i].Credits;
+		document.getElementById('creditTracker').appendChild(playerCreditTracker);
+    }
+}
+
+function renderHands() {
+    // Reset the hands
+    document.getElementById('hands').innerHTML = '';
+
+    // Set up the credit tracker UI
+    for (let i = 0; i < playerCount; i++) {
+        let heading = document.createElement('h2');
+        heading.innerText = `Player ${i + 1} Hand`;
+
+        let container = document.createElement('div');
+        container.className = "container";
+
+        console.log(players[i].Hand.length);
+
+        for (let x = 0; x < (players[i].Hand.length); i++) {
+            let cardType;
+
+            if (players[i].Hand[x].Value > 0) {
+                cardType = "pos";
+            } else if (isNegative(players[i].Hand[x].Value)) {
+                cardType = "neg";
+            } else {
+                cardType = "";
+            }
+
+            let card = document.createElement('div');
+            let value = document.createElement('div');
+            card.className = "card " + players[i].Hand[x].Stave + " " + cardType;
+            value.className = "value";
+
+            value.innerText = players[i].Hand[x].Value;
+            card.appendChild(value);
+            container.appendChild(card);
+        }
+
+        document.getElementById('hands').appendChild(heading);
+        document.getElementById('hands').appendChild(container);
     }
 }
 
 // Turn Taking
 function nextPlayer() {
+    // Move our player tracker to the next player
     currentPlayer++;
 
-    if (currentPlayer === (playerCount - 1)) {
+    // If the tracker goes past the current number of players, move the stage tracker forward and reset the player tracker
+    if (currentPlayer === playerCount) {
         currentPlayer = 0;
-        console.log('reset player');
+        currentStage++;
     }
 
+    // At the end of the final stage, roll the spike and move to the next round
+    if (currentStage === 3) {
+        rollSpike();
+        currentStage = 1;
+        currentRound++;
+    }
+
+    // After the third round, end the game
+    if (currentRound === 4) {
+        alert("Game Over!");
+
+        endGame();
+    }
+
+    // Update the game UI to refelect these state changes
     updateGameUI();
 }
 
@@ -176,7 +246,7 @@ function renderDeck() {
         
         if (deck[i].Value > 0) {
             cardType = "pos";
-        } else if (isNegative(deck[1].Value)) {
+        } else if (isNegative(deck[i].Value)) {
             cardType = "neg";
         } else {
             cardType = "";
@@ -188,7 +258,7 @@ function renderDeck() {
         card.className = "card " + deck[i].Stave + " " + cardType;
         value.className = "value";
 
-        value.innerHTML = deck[i].Value;
+        value.innerText = deck[i].Value;
 		card.appendChild(value);
 
 		document.getElementById('deck').appendChild(card);
@@ -203,10 +273,34 @@ function resetDeck() {
     shuffle();
 }
 
-function discardDeck() {
-    discard.push(deck.pop());
+function discardCard(unwantedCard) {
+    // Remove the current discard pile card in the DOM, if there is one
+    document.getElementById('discard').innerHTML = '';
 
-    document.getElementById('discard').innerText = discard[0].Value;
+    // Put the discarded card into the top of the discard pile
+    discard.push(unwantedCard);
+
+    // Determine if the card should be green or red depending on the value
+    // This uses generic class names for color customization
+    let cardType;
+    if (unwantedCard.Value > 0) {
+        cardType = "pos";
+    } else if (isNegative(unwantedCard.Value)) {
+        cardType = "neg";
+    } else {
+        cardType = "";
+    }
+
+    // Create the card on the page
+    let card = document.createElement('div');
+    let value = document.createElement('div');
+    card.className = "card " + unwantedCard.Stave + " " + cardType;
+    value.className = "value";
+
+    value.innerHTML = unwantedCard.Value;
+    card.appendChild(value);
+
+    document.getElementById('discard').appendChild(card);
 }
 
 function newDeal() {
@@ -217,27 +311,55 @@ function newDeal() {
         players[p].Hand.push(...dealCards(2));
     }
 
-    discardDeck();
+    // Discard the top card of the deck
+    discardCard(deck.pop());
 }
 
 function reDeal() {
+    let handSizes = new Array();
+
     // Pull the current number of cards from each player
+    for (let p = 0; p < playerCount; p++) {
+
+        // Pull the number of cards that are in their hand
+        let playerHand = players[p].Hand
+        let handSize = Object.keys(playerHand).length;
+
+        // Store that in our array
+        handSizes.push(handSize);
+
+        // Empty their hand
+        players[p] = {Hand:new Array()};
+    }
+
+    console.log("All player data before reset: ", players);
+    console.log("All player cards: " + handSizes);
 
     resetDeck();
 
-    // Deal out the same number of cards to each player
+    for (let p = 0; p < playerCount; p++) {
+        // Pull their number of cards out of our array
+        let newHand = handSizes.pop();
 
-    discardDeck();
+        // Deal them the same number of cards from the fresh desk
+        players[p].Hand.push(...dealCards(newHand));
+    }
+
+    console.log("All player data after reset: ", players);
+
+    // Discard the top card of the deck
+    discardCard(deck.pop());
 }
 
 function dealCards(cardNumber) {
-    let cards = new Array();
+    let deltCards = new Array();
 
+    // Pull the number of requested cards off the deck and pass them back 
     for (let i = 0; i < cardNumber; i++ ) {
-        cards.push(deck.pop());
+        deltCards.push(deck.pop());
     }
 
-    return cards;
+    return deltCards;
 }
 
 // Drawing Functions
@@ -246,26 +368,41 @@ function stand() {
 }
 
 function drawFromPile() {
+    // Spend 1 credit
+    spendGamePot(currentPlayer, 1);
 
+    // Pull one card from the deck
+    let drawnCard = dealCards(1);
+
+    // Ask if the player wants to keep the card, either add it to their hand or discard it
+    if (confirm(`You draw a ${drawnCard[0].Value}, do you want to keep it?`) === true) {
+        players[currentPlayer].Hand.push(...drawnCard);
+    } else {
+        discardCard(drawnCard[0]);
+    }
+
+    nextPlayer();
 }
 
 function swapFromPile() {
 
+    nextPlayer();
 }
 
 function swapFromDiscard() {
 
+    nextPlayer();
 }
 
-// Betting Functions
-function anteGamePot(player, amount) {
+// Spending Functions
+function spendGamePot(player, amount) {
     players[player].Credits = players[player].Credits - amount;
     gamePot = gamePot + amount;
 
     document.getElementById('gamePot').innerText = gamePot;
 }
 
-function anteSabaccPot(player, amount) {
+function spendSabaccPot(player, amount) {
     players[player].Credits = players[player].Credits - amount;
     sabaccPot = sabaccPot + amount;
 
@@ -274,13 +411,14 @@ function anteSabaccPot(player, amount) {
 
 function anteUp() {
     for (let p = 0; p < playerCount; p++) {
-        anteGamePot(p, gameAnte);
-        anteSabaccPot(p, sabaccAnte);
+        spendGamePot(p, gameAnte);
+        spendSabaccPot(p, sabaccAnte);
     }
 }
 
+// Betting Functions
 function check() {
-    // Move to the next player's turn
+    nextPlayer();
 }
 
 function bet(pot, amount) {
@@ -305,7 +443,15 @@ function allIn() {
 
 // Spiking Functions
 function rollSpike() {
+    var firstDie = Math.floor((Math.random()*6) + 1);
+    var secondDie = Math.floor((Math.random()*6) + 1);
 
+    if (firstDie === secondDie) {
+        alert("Spiked!");
+        reDeal();
+    } else {
+        alert("No Spike");
+    }
 }
 
 // Misc utilities
