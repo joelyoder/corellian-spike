@@ -335,20 +335,17 @@ function reDeal() {
     for (let x = 0; x < playerCount; x++) {
 
         // Pull the number of cards that are in their hand
-        let playerHand = players[x].Hand
-        let handSize = Object.keys(playerHand).length;
+        let handSize = Object.keys(players[x].Hand).length;
 
         // Store that in our array
         handSizes.push(handSize);
 
-        // Empty their hand
-        players[x] = {Hand:new Array()};
+        // Discard the player hand
+        for (let i = 0; i < handSize; i++) {
+            let tempCard = players[x].Hand.pop();
+            discardCard(tempCard);
+        }
     }
-
-    console.log("All player data before reset: ", players);
-    console.log("All player cards: " + handSizes);
-
-    resetDeck();
 
     for (let i = 0; i < playerCount; i++) {
         // Pull their number of cards out of our array
@@ -357,11 +354,6 @@ function reDeal() {
         // Deal them the same number of cards from the fresh desk
         players[i].Hand.push(...dealCards(newHand));
     }
-
-    console.log("All player data after reset: ", players);
-
-    // Discard the top card of the deck
-    discardCard(deck.pop());
 }
 
 function dealCards(cardNumber) {
