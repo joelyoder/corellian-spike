@@ -421,8 +421,6 @@ function swapFromDiscard() {
     // Yoink the top card in the discard pile
     let pickedUpCard = discard.pop();
 
-    console.log(pickedUpCard);
-
     // Take a chosen card from their hand and discard it
     discardCard(...pullFromHand());
 
@@ -436,6 +434,7 @@ function pullFromHand() {
     // Prompt until they give a valid number
     let cardNumber = loopUntilCorrectNumber(`Discard a card from your hand. Choose a number between 1-${players[currentPlayer].Hand.length} based on hand order.`, players[currentPlayer].Hand.length);
 
+    // Decrease the number to match the array keys
     cardNumber--;
 
     //Yoink the card out of their hand
