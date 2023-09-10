@@ -1,5 +1,7 @@
 # Corellian Spike
- *Sabacc for the bold!*
+*The world's first* digital Sabacc game.*
+
+Written in vanilla JS.
 
 ## MVP Progress
 
@@ -40,3 +42,5 @@
 - [ ] Special win conditions (which hands beat which)
 - [x] Player hands are reset, but credits are not
 - [x] A new game is started after the final round
+
+*as far as I can tell from Google searches...
