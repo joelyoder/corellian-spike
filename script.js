@@ -44,7 +44,7 @@ function newGame() {
     // Set up the players
     for (let i = 0; i < playerCount; i++) {
         // Create the players array that tracks their stats and give them the starting credits
-        players[i] = {Hand:new Array(), Credits:startingCredits, LastBet:0};
+        players[i] = {Hand:new Array(), Credits:startingCredits, LastBet:0, AllIn: false,};
     }
     
     newDeal();
@@ -110,11 +110,27 @@ function updateGameUI() {
 
     // Determine visibility of drawing and betting controls
     if(currentStage === 1) {
-        document.getElementById("drawing").style.display = "block";
+        document.getElementById("drawing").style.display = "initial";
         document.getElementById("betting").style.display = "none";
     } else if(currentStage === 2) {
-        document.getElementById("betting").style.display = "block";
+        document.getElementById("betting").style.display = "initial";
         document.getElementById("drawing").style.display = "none";
+
+        // Hide betting options that are not available
+        if (currentBet > players[currentPlayer].Credits) {
+            document.getElementById("check").style.display = "none";
+            document.getElementById("bet").style.display = "none";
+            document.getElementById("call").style.display = "none";
+            document.getElementById("raise").style.display = "none";
+            document.getElementById("allIn").style.display = "none";
+        } else {
+            document.getElementById("check").style.display = "initial";
+            document.getElementById("bet").style.display = "initial";
+            document.getElementById("call").style.display = "initial";
+            document.getElementById("raise").style.display = "initial";
+            document.getElementById("allIn").style.display = "initial";
+        }
+
     } else if(currentStage === 3) {
         document.getElementById("drawing").style.display = "none";
         document.getElementById("betting").style.display = "none";
@@ -480,7 +496,19 @@ function junk() {
 }
 
 function allIn() {
+    // Record their bet
+    players[currentPlayer].LastBet = players[currentPlayer].Credits;
 
+    // Update the current bet
+    currentBet = players[currentPlayer].Credits;
+
+    // Bet all the things!
+    spendGamePot(currentPlayer, players[currentPlayer].Credits);
+
+    // Toggle the All In flag to end betting for the game
+    players[currentPlayer].AllIn = true;
+
+    nextPlayer();
 }
 
 // Spiking Functions
