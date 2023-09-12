@@ -131,6 +131,11 @@ function updateGameUI() {
             document.getElementById("allIn").style.display = "initial";
         }
 
+        // Hide the bet button if a bet has already been made
+        if (currentBet > 0) {
+            document.getElementById("bet").style.display = "none";
+        }
+
     } else if(currentStage === 3) {
         document.getElementById("drawing").style.display = "none";
         document.getElementById("betting").style.display = "none";
@@ -200,6 +205,9 @@ function nextPlayer() {
 
     // At the end of the final stage, roll the spike and move to the next round
     if (currentStage === 3) {
+        // Reset the current bet counter
+        currentBet = 0;
+
         rollSpike();
         currentStage = 1;
         currentRound++;
@@ -480,7 +488,16 @@ function check() {
 }
 
 function bet(pot, amount) {
-    
+    // Get their bet
+    betAmount = loopUntilCorrectNumber("How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}", players[currentPlayer].Credits);
+
+    // Update the current bet
+    currentBet = betAmount;
+
+    // Bet all the things!
+    spendGamePot(currentPlayer, currentBet);
+
+    nextPlayer();
 }
 
 function call() {
@@ -552,6 +569,6 @@ function loopUntilCorrectNumber(promptQuestion, maxValue) {
         return retval;
       }
         
-      alert("Please enter a number");
+      alert("Please enter a valid number");
     }
   }

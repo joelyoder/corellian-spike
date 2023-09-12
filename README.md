@@ -44,3 +44,7 @@ Written in vanilla JS.
 - [x] A new game is started after the final round
 
 *as far as I can tell from Google searches...
+
+---
+
+To launch the http server in Github Codespaces, use the command: `http-server`
