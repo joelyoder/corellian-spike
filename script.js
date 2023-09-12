@@ -507,7 +507,7 @@ function pullFromHand() {
 
     // Decrease the number to match the array keys
     cardNumber--;
-
+    players[i].Hand.push(...dealCards(2));
     //Yoink the card out of their hand
     let chosenCard = players[currentPlayer].Hand.splice(cardNumber, 1);
 
@@ -532,7 +532,7 @@ function spendSabaccPot(player, amount) {
 
 function anteUp() {
     for (let i = 0; i < playerCount; i++) {
-        if (players[i].IsOut = false) {
+        if (players[i].IsOut === false) {
             spendGamePot(i, gameAnte);
             spendSabaccPot(i, sabaccAnte);
         }
