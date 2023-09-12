@@ -50,21 +50,46 @@ function newGame() {
             Hand:new Array(),
             Credits:startingCredits,
             LastBet:0,
-            HasBet: false,
-            AllIn: false,
-            HasJunked: false,
-            IsOut: false
+            HasBet:false,
+            AllIn:false,
+            HasJunked:false,
+            IsOut:false
         };
     }
     
     newDeal();
     anteUp();
     updateGameUI();
-
-    console.log('Round ' + currentRound, 'Stage ' + currentStage, 'Player ' +  (currentPlayer + 1));
 }
 
 function endGame() {
+    let finalScores = new Array();
+
+    for (let i = 0; i < playerCount; i++) {
+        let playerScore = 0;
+
+        for (let x = 0; x < players[i].Hand.length; x++) {
+            let temp = players[i].Hand[x].Value;
+
+            playerScore += parseFloat(temp);
+        }
+
+        finalScores.push(playerScore);
+    }
+
+    function indexOfWinner(a) {
+        // Currently just finds the lowest number. Not useful
+        let lowest = 0;
+        for (let i = 1; i < a.length; i++) {
+            if (a[i] < a[lowest]) lowest = i;
+        }
+        return lowest;
+    }
+
+    let winner = indexOfWinner(finalScores);
+
+    alert(`Game over! Final Scores: ${finalScores}. The winner is Player ${winner + 1}!`);
+
     // Determine winner via game conditions - be sure to ignore junked players
     // Assign winnings to the winning player
     // Reset sabacc pot if they won via sabacc
@@ -78,7 +103,7 @@ function endGame() {
 
     // Empty the player hands and remove uneeded flags
     for (let i = 0; i < playerCount; i++) {
-        players[i] = {Hand:new Array()};
+        players[i].Hand = new Array();
         players[i].AllIn = false;
         players[i].HasJunked = false;
 
@@ -259,8 +284,6 @@ function nextPlayer() {
 
     // After the third round, end the game
     if (currentRound === 4) {
-        alert("Game Over!");
-
         endGame();
     }
 }
@@ -662,4 +685,4 @@ function loopUntilCorrectNumber(promptQuestion, maxValue) {
         
       alert("Please enter a valid number");
     }
-  }
+}
