@@ -25,11 +25,13 @@ Written in vanilla JS.
 
 ### Betting Phase
 - [x] Standing
-- [ ] Making a bet
-- [ ] Calling the bet
-- [ ] Raising the bet
-- [ ] Junking (folding)
+- [x] Making a bet
+- [x] Calling the bet
+- [x] Raising the bet
+- [x] Junking (folding)
 - [ ] Going all in
+    - Basic implementaion added, but does not account for side pots yet. Currently the player with the highest credits can cheese the game by always going all in.
+- [x] Raise limit
 
 ### Spike Phase
 - [x] Rolling the dice
@@ -41,6 +43,7 @@ Written in vanilla JS.
 - [ ] Distributing the winnning pot(s) to the winner
 - [ ] Special win conditions (which hands beat which)
 - [x] Player hands are reset, but credits are not
+- [x] Players without enough credits to ante are eliminated
 - [x] A new game is started after the final round
 
 *as far as I can tell from Google searches...

@@ -12,6 +12,7 @@ let discard = new Array();
 const startingCredits = 100;
 const gameAnte = 1;
 const sabaccAnte = 2;
+const raiseLimit = 3;
 
 // Players
 const playerCount = 4;
@@ -22,6 +23,7 @@ let currentRound = 1;
 let currentStage = 1;
 let currentPlayer = 0;
 let currentBet = 0;
+let currentRaise = 0;
 
 // Set up a new game automatically on load
 function load()
@@ -44,7 +46,15 @@ function newGame() {
     // Set up the players
     for (let i = 0; i < playerCount; i++) {
         // Create the players array that tracks their stats and give them the starting credits
-        players[i] = {Hand:new Array(), Credits:startingCredits, LastBet:0, AllIn: false,};
+        players[i] = {
+            Hand:new Array(),
+            Credits:startingCredits,
+            LastBet:0,
+            HasBet: false,
+            AllIn: false,
+            HasJunked: false,
+            IsOut: false
+        };
     }
     
     newDeal();
@@ -55,7 +65,7 @@ function newGame() {
 }
 
 function endGame() {
-    // Determine winner via game conditions
+    // Determine winner via game conditions - be sure to ignore junked players
     // Assign winnings to the winning player
     // Reset sabacc pot if they won via sabacc
 
@@ -66,9 +76,16 @@ function endGame() {
     currentStage = 1;
     currentBet = 0;
 
-    // Empty the player hands
+    // Empty the player hands and remove uneeded flags
     for (let i = 0; i < playerCount; i++) {
         players[i] = {Hand:new Array()};
+        players[i].AllIn = false;
+        players[i].HasJunked = false;
+
+        // If a player doesn't have enough credits to ante, they are OUT
+        if (players[i].Credits > 3) {
+            players[i].IsOut = true;
+        }
     }
 
     newDeal();
@@ -122,18 +139,27 @@ function updateGameUI() {
             document.getElementById("bet").style.display = "none";
             document.getElementById("call").style.display = "none";
             document.getElementById("raise").style.display = "none";
-            document.getElementById("allIn").style.display = "none";
         } else {
             document.getElementById("check").style.display = "initial";
             document.getElementById("bet").style.display = "initial";
             document.getElementById("call").style.display = "initial";
             document.getElementById("raise").style.display = "initial";
-            document.getElementById("allIn").style.display = "initial";
         }
 
         // Hide the bet button if a bet has already been made
         if (currentBet > 0) {
+            document.getElementById("check").style.display = "none";
             document.getElementById("bet").style.display = "none";
+            document.getElementById("junk").style.display = "initial";
+        } else if (currentBet === 0) {
+            document.getElementById("call").style.display = "none";
+            document.getElementById("raise").style.display = "none";
+            document.getElementById("junk").style.display = "none";
+        }
+
+        // Hide the raise button if you've hit the limit
+        if (currentRaise === raiseLimit) {
+            document.getElementById("raise").style.display = "none";
         }
 
     } else if(currentStage === 3) {
@@ -197,21 +223,39 @@ function nextPlayer() {
     // Move our player tracker to the next player
     currentPlayer++;
 
-    // If the tracker goes past the current number of players, move the stage tracker forward and reset the player tracker
-    if (currentPlayer === playerCount) {
+    // If a player has junked or is out, skip em
+    if ((currentPlayer != playerCount) && (players[currentPlayer].HasJunked === true || players[currentPlayer].IsOut === true)) {
+        currentPlayer++;
+    }
+
+    // If the tracker goes past the current number of players, but the first player still needs to call the betting goes back around
+    if ((currentPlayer === playerCount) && (players[0].LastBet < currentBet)) {
+        currentPlayer = 0;
+    }
+    // Otherwise if the tracker goes past the current number of players, move the stage tracker forward and reset the player tracker
+    else if (currentPlayer === playerCount) {
+        resetBetting();
+        currentPlayer = 0;
+        currentStage++;
+    }
+    // Finally if the player has already bet once and they don't need to increase their bet to stay in, move to the next round
+    else if ((players[currentPlayer].HasBet === true) && (players[currentPlayer].LastBet === currentBet)) {
+        resetBetting();
         currentPlayer = 0;
         currentStage++;
     }
 
     // At the end of the final stage, roll the spike and move to the next round
     if (currentStage === 3) {
-        // Reset the current bet counter
-        currentBet = 0;
+        updateGameUI();
 
         rollSpike();
         currentStage = 1;
         currentRound++;
     }
+
+    // Update the game UI to refelect these state changes
+    updateGameUI();
 
     // After the third round, end the game
     if (currentRound === 4) {
@@ -219,9 +263,17 @@ function nextPlayer() {
 
         endGame();
     }
+}
 
-    // Update the game UI to refelect these state changes
-    updateGameUI();
+function resetBetting() {
+    // Reset betting tracking for all players
+    for (let i = 0; i < playerCount; i++) {
+        players[i].LastBet = 0;
+        players[i].HasBet = false;
+    }
+
+    // Reset the current bet counter
+    currentBet = 0;
 }
 
 
@@ -345,7 +397,10 @@ function newDeal() {
 
     // Deal 2 cards to each player
     for (let i = 0; i < playerCount; i++) {
-        players[i].Hand.push(...dealCards(2));
+        // Don't deal cards to players that are out of the game
+        if (players[i].HasJunked === false || players[i].IsOut === flase) {
+            players[i].Hand.push(...dealCards(2));
+        }
     }
 
     // Discard the top card of the deck
@@ -476,9 +531,11 @@ function spendSabaccPot(player, amount) {
 }
 
 function anteUp() {
-    for (let p = 0; p < playerCount; p++) {
-        spendGamePot(p, gameAnte);
-        spendSabaccPot(p, sabaccAnte);
+    for (let i = 0; i < playerCount; i++) {
+        if (players[i].IsOut = false) {
+            spendGamePot(i, gameAnte);
+            spendSabaccPot(i, sabaccAnte);
+        }
     }
 }
 
@@ -487,29 +544,54 @@ function check() {
     nextPlayer();
 }
 
-function bet(pot, amount) {
+function bet() {
     // Get their bet
-    betAmount = loopUntilCorrectNumber("How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}", players[currentPlayer].Credits);
+    let betAmount = parseInt(loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits));
 
-    // Update the current bet
-    currentBet = betAmount;
+    // If they put in everything they have, ensure they're considered all in
+    if (betAmount === players[currentPlayer].Credits) {
+        allIn();
+    } else {
+        // Update the current bet
+        currentBet = betAmount;
 
-    // Bet all the things!
-    spendGamePot(currentPlayer, currentBet);
+        // Bye bye money!
+        spendGamePot(currentPlayer, currentBet);
 
-    nextPlayer();
+        trackBet();
+        nextPlayer();
+    }
 }
 
 function call() {
+    // Up your bet to match the current bet
+    spendGamePot(currentPlayer, (currentBet - players[currentPlayer].LastBet));
 
+    trackBet();
+    nextPlayer();
 }
 
-function raise(amount) {
+function raise() {
+    // Get their bet
+    let raiseAmount = parseInt(loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits));
 
+    // Update the current bet
+    currentBet += raiseAmount;
+
+    // Bet the raised amount, but don't add in the current bet if you already put that money in the pot this round
+    spendGamePot(currentPlayer, (currentBet - players[currentPlayer].LastBet));
+
+    // Iterate the raise counter
+    currentRaise++;
+
+    trackBet();
+    nextPlayer();
 }
 
 function junk() {
+    players[currentPlayer].HasJunked = true;
 
+    nextPlayer();
 }
 
 function allIn() {
@@ -525,7 +607,16 @@ function allIn() {
     // Toggle the All In flag to end betting for the game
     players[currentPlayer].AllIn = true;
 
+    trackBet();
     nextPlayer();
+}
+
+function trackBet() {
+    // Keep track of how much you've bet this round
+    players[currentPlayer].LastBet = currentBet;
+
+    // Mark that you have made a bet this round
+    players[currentPlayer].HasBet = true;
 }
 
 // Spiking Functions
