@@ -64,7 +64,9 @@ function newGame() {
 
 function endGame() {
     let finalScores = new Array();
+    let absScores = new Array();
 
+    // Determine winner via game conditions - be sure to ignore junked players
     for (let i = 0; i < playerCount; i++) {
         let playerScore = 0;
 
@@ -74,25 +76,39 @@ function endGame() {
             playerScore += parseFloat(temp);
         }
 
+        // Don't assign them a score if they're out of the game
+        if (players[i].HasJunked === true || players[i].IsOut === true) {
+            playerScore = null;
+        }
+
+        // Store the final scores
         finalScores.push(playerScore);
+
+        // Store the final score in absolute numbers
+        absScores.push(Math.abs(playerScore));
     }
 
     function indexOfWinner(a) {
-        // Currently just finds the lowest number. Not useful
+        // Finds the lowest number while ignoring players that are sitting out. Does not handle ties accurately yet
         let lowest = 0;
         for (let i = 1; i < a.length; i++) {
-            if (a[i] < a[lowest]) lowest = i;
+            if ((a[i] < a[lowest]) && (a[i] !== null)) lowest = i;
         }
         return lowest;
     }
 
-    let winner = indexOfWinner(finalScores);
+    let winner = indexOfWinner(absScores);
 
     alert(`Game over! Final Scores: ${finalScores}. The winner is Player ${winner + 1}!`);
 
-    // Determine winner via game conditions - be sure to ignore junked players
     // Assign winnings to the winning player
-    // Reset sabacc pot if they won via sabacc
+    players[winner].Credits += gamePot;
+
+    // If a player gets Sabacc, reset give them the winnings and reset the sabacc pot
+    if (finalScores[winner] === 0) {
+        players[winner].Credits += sabaccPot;
+        sabaccPot = 0;
+    }
 
     // Reset everything that always should be reset
     gamePot = 0;
@@ -108,7 +124,7 @@ function endGame() {
         players[i].HasJunked = false;
 
         // If a player doesn't have enough credits to ante, they are OUT
-        if (players[i].Credits > 3) {
+        if (players[i].Credits < 3) {
             players[i].IsOut = true;
         }
     }
@@ -158,28 +174,37 @@ function updateGameUI() {
         document.getElementById("betting").style.display = "initial";
         document.getElementById("drawing").style.display = "none";
 
-        // Hide betting options that are not available
-        if (currentBet > players[currentPlayer].Credits) {
-            document.getElementById("check").style.display = "none";
-            document.getElementById("bet").style.display = "none";
-            document.getElementById("call").style.display = "none";
-            document.getElementById("raise").style.display = "none";
-        } else {
-            document.getElementById("check").style.display = "initial";
-            document.getElementById("bet").style.display = "initial";
-            document.getElementById("call").style.display = "initial";
-            document.getElementById("raise").style.display = "initial";
-        }
+        // Ensure all of the buttons are visible by default
+        document.getElementById("check").style.display = "initial";
+        document.getElementById("bet").style.display = "initial";
+        document.getElementById("call").style.display = "initial";
+        document.getElementById("raise").style.display = "initial";
+        document.getElementById("junk").style.display = "initial";
+        document.getElementById("allIn").style.display = "initial";
 
-        // Hide the bet button if a bet has already been made
-        if (currentBet > 0) {
-            document.getElementById("check").style.display = "none";
-            document.getElementById("bet").style.display = "none";
-            document.getElementById("junk").style.display = "initial";
-        } else if (currentBet === 0) {
+        // If no bet has been made, hide the call, raise and junk options
+        if (currentBet === 0 ) {
             document.getElementById("call").style.display = "none";
             document.getElementById("raise").style.display = "none";
             document.getElementById("junk").style.display = "none";
+        }
+
+        // If a bet has already been made, hide the check and bet buttons
+        if (currentBet > 0) {
+            document.getElementById("check").style.display = "none";
+            document.getElementById("bet").style.display = "none";
+        }
+
+        // If the player is too poor to make a bet or must go all in, hide call and raise
+        if (currentBet >= players[currentPlayer].Credits) {
+            document.getElementById("call").style.display = "none";
+            document.getElementById("raise").style.display = "none";
+        }
+
+        // If the player is too poor to make any bets, ensure the bet and all in buttons are hidden
+        if (players[currentPlayer].Credits === 0) {
+            document.getElementById("bet").style.display = "none";
+            document.getElementById("allIn").style.display = "none";
         }
 
         // Hide the raise button if you've hit the limit
