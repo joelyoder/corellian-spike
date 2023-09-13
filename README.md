@@ -39,12 +39,21 @@ Written in vanilla JS.
 
 ### Game End
 - [x] Game ends after third round
-- [ ] Comparing hands and determining a winner
-- [ ] Distributing the winnning pot(s) to the winner
+- [x] Comparing hands and determining a winner
 - [ ] Special win conditions (which hands beat which)
+    - Also currently does not have logic to handle multiple players with the same winning score
+- [x] Distributing the winnning pot(s) to the winner
 - [x] Player hands are reset, but credits are not
 - [x] Players without enough credits to ante are eliminated
 - [x] A new game is started after the final round
+
+## User Interface
+- [x] Only show the current player's hand
+- [x] Only show actions that the current player is allowed to take
+- [ ] User-friendly desktop layout
+- [ ] User-friendly mobile layout
+- [ ] Card designs that look like real Sabacc cards and show staves
+- [ ] Star Wars inspired theme (colors & fonts)
 
 *as far as I can tell from Google searches...
 
