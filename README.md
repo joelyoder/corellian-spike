@@ -1,7 +1,9 @@
 # Corellian Spike
-*The world's first* digital Sabacc game.*
+*The world's first digital Sabacc game.*
 
 Written in vanilla JS.
+
+[Play online](https://joelyoder.github.io/corellian-spike/)
 
 ## MVP Progress
 
@@ -54,8 +56,6 @@ Written in vanilla JS.
 - [ ] User-friendly mobile layout
 - [ ] Card designs that look like real Sabacc cards and show staves
 - [ ] Star Wars inspired theme (colors & fonts)
-
-*as far as I can tell from Google searches...
 
 ---
 
