@@ -1,39 +1,155 @@
-#deck,
-#discard,
-.container {
-    padding: 1em;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-}
-
-.card {
-    border: 2px solid #e7e7e7;
-    margin: .2em;
-    max-width: 15px;
-    padding: 1em .5em;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-}
-
-.card.pos {
-    background-color: green;
-}
-
-.card.neg {
-    background-color: red;
-}
-
-.card.sylops {
-    background-color: blue;
-}
-
-.card .value {
-    color: white;
-    font-weight: bold;
+:root {
+    --card-shape: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    --pos: green;
+    --neg: red;
+    --sylops: goldenrod;
 }
 
 body {
     background-color: #0d1117;
     color: white;
+    margin: 0;
+}
+
+#gameboard {
+    display: grid;
+    grid-template-columns: .5fr repeat(3, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    min-height: 1vh;
+    min-width: 1vw;
+    padding: 5px;
+}
+
+.players {
+    grid-area: 1 / 2 / 2 / 5;
+}
+
+.discard-pile {
+    grid-area: 2 / 2 / 4 / 3;
+}
+
+.player-hand {
+    grid-area: 5 / 2 / 7 / 5;
+}
+
+.actions {
+    grid-area: 4 / 2 / 5 / 5;
+}
+
+.game-pot {
+    grid-area: 2 / 3 / 4 / 4;
+}
+
+.sabacc-pot {
+    grid-area: 2 / 4 / 4 / 5;
+}
+
+.title {
+    grid-area: 1 / 1 / 2 / 2;
+    padding: .5em 1em;
+}
+
+.game-info {
+    grid-area: 2 / 1 / 5 / 2;
+}
+
+body {
+    font-family: sans-serif;
+}
+
+button {
+    background-color: navy;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: blue;
+}
+
+#discard,
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 20%);
+}
+
+.card {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    clip-path: var(--card-shape);
+    height: 12em;
+    width: 10em;
+    background-color: white;
+}
+
+.card.pos {
+    border-top: 15px solid var(--pos);
+    border-bottom: 15px solid var(--pos);
+}
+
+.card.pos .value {
+    color: var(--pos);
+}
+
+.card.neg {
+    border-top: 15px solid var(--neg);
+    border-bottom: 15px solid var(--neg);
+}
+
+.card.neg .value {
+    color: var(--neg);
+}
+
+.card.sylops {
+    border-top: 15px solid var(--sylops);
+    border-bottom: 15px solid var(--sylops);
+}
+
+.card.sylops .value {
+    color: var(--sylops);
+}
+
+.card .value {
+    font-weight: bold;
+    font-size: 3em;
+    font-family: sans-serif;
+}
+
+.progress-bar {
+    height: 20px;
+    width: 100%;
+    background-color: navy;
+}
+
+.progress-bar .bar {
+    height: 20px;
+    width: 30%;
+}
+
+.progress-bar .bar span {
+    display: inline-block;
+}
+
+#rnd1progress {
+    height: 20px;
+    background-color: green;
+}
+
+#rnd2progress {
+    height: 20px;
+    background-color: orange;
+}
+
+#rnd3progress {
+    height: 20px;
+    background-color: red;
 }

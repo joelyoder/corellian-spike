@@ -9,7 +9,7 @@ let deck = new Array();
 let discard = new Array();
 
 // Defaults
-const startingCredits = 100;
+const startingCredits = 410;
 const gameAnte = 1;
 const sabaccAnte = 2;
 const raiseLimit = 3;
@@ -76,9 +76,10 @@ function endGame() {
             playerScore += parseFloat(temp);
         }
 
-        // Don't assign them a score if they're out of the game
+        // Give players an impossibly high score if they're out of the game
+        // TODO: When side pots are implemented, ensure
         if (players[i].HasJunked === true || players[i].IsOut === true) {
-            playerScore = null;
+            playerScore = 1000;
         }
 
         // Store the final scores
@@ -92,7 +93,7 @@ function endGame() {
         // Finds the lowest number while ignoring players that are sitting out. Does not handle ties accurately yet
         let lowest = 0;
         for (let i = 1; i < a.length; i++) {
-            if ((a[i] < a[lowest]) && (a[i] !== null)) lowest = i;
+            if (a[i] < a[lowest]) lowest = i;
         }
         return lowest;
     }
@@ -131,6 +132,7 @@ function endGame() {
 
     newDeal();
     anteUp();
+    skipJunkedPlayers();
     updateGameUI();
 }
 
@@ -163,7 +165,8 @@ function updateGameUI() {
             document.getElementById('currentStage').innerText = 'Error';
     }
 
-    renderDeck();
+    updateProgressBar();
+
     renderHand();
 
     // Determine visibility of drawing and betting controls
@@ -202,7 +205,7 @@ function updateGameUI() {
         }
 
         // If the player is too poor to make any bets, ensure the bet and all in buttons are hidden
-        if (players[currentPlayer].Credits === 0) {
+        if (players[currentPlayer].Credits === 0 || currentBet > players[currentPlayer].Credits) {
             document.getElementById("bet").style.display = "none";
             document.getElementById("allIn").style.display = "none";
         }
@@ -215,8 +218,6 @@ function updateGameUI() {
     } else if(currentStage === 3) {
         document.getElementById("drawing").style.display = "none";
         document.getElementById("betting").style.display = "none";
-    } else {
-        // Do nothing
     }
 }
 
@@ -243,6 +244,8 @@ function renderHand() {
     let container = document.createElement('div');
     container.className = `container`;
 
+    let handValues = new Array();
+
     for (let x = 0; x < players[currentPlayer].Hand.length; x++) {
         let cardType;
 
@@ -262,9 +265,15 @@ function renderHand() {
         value.innerText = players[currentPlayer].Hand[x].Value;
         card.appendChild(value);
         container.appendChild(card);
+
+        handValues.push(players[currentPlayer].Hand[x].Value);
     }
 
+    let handTotal = document.createElement('p');
+    handTotal.innerHTML = `Hand total: <strong>${handValues.reduce((a, b) => a + b, 0)}</strong>`;
+
     document.getElementById('hand').appendChild(heading);
+    document.getElementById('hand').appendChild(handTotal);
     document.getElementById('hand').appendChild(container);
 }
 
@@ -273,25 +282,36 @@ function nextPlayer() {
     // Move our player tracker to the next player
     currentPlayer++;
 
-    // If a player has junked or is out, skip em
-    if ((currentPlayer != playerCount) && (players[currentPlayer].HasJunked === true || players[currentPlayer].IsOut === true)) {
+    skipJunkedPlayers();
+
+    // Skip junked and out players
+    while ((currentPlayer != playerCount) && (players[currentPlayer].HasJunked === true || players[currentPlayer].IsOut === true)) {
         currentPlayer++;
     }
 
     // If the tracker goes past the current number of players, but the first player still needs to call the betting goes back around
     if ((currentPlayer === playerCount) && (players[0].LastBet < currentBet)) {
         currentPlayer = 0;
+        skipJunkedPlayers();
     }
+
     // Otherwise if the tracker goes past the current number of players, move the stage tracker forward and reset the player tracker
     else if (currentPlayer === playerCount) {
         resetBetting();
+
         currentPlayer = 0;
+        skipJunkedPlayers();
+
         currentStage++;
     }
+
     // Finally if the player has already bet once and they don't need to increase their bet to stay in, move to the next round
     else if ((players[currentPlayer].HasBet === true) && (players[currentPlayer].LastBet === currentBet)) {
         resetBetting();
+
         currentPlayer = 0;
+        skipJunkedPlayers();
+
         currentStage++;
     }
 
@@ -300,6 +320,10 @@ function nextPlayer() {
         updateGameUI();
 
         rollSpike();
+
+        currentPlayer = 0;
+        skipJunkedPlayers();
+
         currentStage = 1;
         currentRound++;
     }
@@ -309,6 +333,26 @@ function nextPlayer() {
 
     // After the third round, end the game
     if (currentRound === 4) {
+        endGame();
+    }
+}
+
+function skipJunkedPlayers() {
+    // If a player has junked or is out, skip em
+    while ((currentPlayer != playerCount) && (players[currentPlayer].HasJunked === true || players[currentPlayer].IsOut === true)) {
+        currentPlayer++;
+    }
+
+    // If there is only one player left, end the game early
+    let activePlayerCount = 0;
+
+    for (let i = 0; i < playerCount; i++) {
+        if (players[i].HasJunked === false && players[i].IsOut === false) {
+            activePlayerCount++;
+        }
+    }
+
+    if (activePlayerCount < 2) {
         endGame();
     }
 }
@@ -366,8 +410,6 @@ function shuffle() {
 		deck[location1] = deck[location2];
 		deck[location2] = tmp;
     }
-
-    renderDeck();
 }
 
 function renderDeck() {
@@ -446,7 +488,7 @@ function newDeal() {
     // Deal 2 cards to each player
     for (let i = 0; i < playerCount; i++) {
         // Don't deal cards to players that are out of the game
-        if (players[i].HasJunked === false || players[i].IsOut === flase) {
+        if (players[i].HasJunked === false && players[i].IsOut === false) {
             players[i].Hand.push(...dealCards(2));
         }
     }
@@ -462,7 +504,7 @@ function reDeal() {
     for (let x = 0; x < playerCount; x++) {
 
         // Pull the number of cards that are in their hand
-        let handSize = Object.keys(players[x].Hand).length;
+        let handSize = players[x].Hand.length;
 
         // Store that in our array
         handSizes.push(handSize);
@@ -555,7 +597,7 @@ function pullFromHand() {
 
     // Decrease the number to match the array keys
     cardNumber--;
-    players[i].Hand.push(...dealCards(2));
+
     //Yoink the card out of their hand
     let chosenCard = players[currentPlayer].Hand.splice(cardNumber, 1);
 
@@ -592,16 +634,18 @@ function check() {
     nextPlayer();
 }
 
-function bet() {
+function bet(amount) {
+    if (amount === 0) {
     // Get their bet
-    let betAmount = parseInt(loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits));
+    amount = parseInt(loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits));
+    }
 
     // If they put in everything they have, ensure they're considered all in
-    if (betAmount === players[currentPlayer].Credits) {
+    if (amount === players[currentPlayer].Credits) {
         allIn();
     } else {
         // Update the current bet
-        currentBet = betAmount;
+        currentBet = amount;
 
         // Bye bye money!
         spendGamePot(currentPlayer, currentBet);
@@ -638,6 +682,12 @@ function raise() {
 
 function junk() {
     players[currentPlayer].HasJunked = true;
+
+    // Discard the player hand
+    for (let i = 0; i < players[currentPlayer].Hand.length; i++) {
+        let tempCard = players[currentPlayer].Hand.pop();
+        discardCard(tempCard);
+    }
 
     nextPlayer();
 }
@@ -677,6 +727,49 @@ function rollSpike() {
         reDeal();
     } else {
         alert("No Spike");
+    }
+}
+
+// Progress Bar
+function updateProgressBar() {
+    if (currentRound === 1) {
+        switch (currentStage) {
+            case 1:
+                document.getElementById("rnd1progress").style.width = "0%";
+                document.getElementById("rnd2progress").style.width = "0%";
+                document.getElementById("rnd3progress").style.width = "0%";
+            break;
+            case 2:
+                document.getElementById("rnd1progress").style.width = "16.66%";
+            break;
+            case 3:
+                document.getElementById("rnd1progress").style.width = "33.33%";
+            break;
+            default:
+                // Do nothing
+        }
+    } else if (currentRound === 2) {
+        switch (currentStage) {
+            case 2:
+                document.getElementById("rnd2progress").style.width = "16.66%";
+            break;
+            case 3:
+                document.getElementById("rnd2progress").style.width = "33.33%";
+            break;
+            default:
+                // Do nothing
+        }
+    } else if (currentRound === 3) {
+        switch (currentStage) {
+            case 2:
+                document.getElementById("rnd3progress").style.width = "16.66%";
+            break;
+            case 3:
+                document.getElementById("rnd3progress").style.width = "33.33%";
+            break;
+            default:
+                // Do nothing
+        }
     }
 }
 

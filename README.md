@@ -52,9 +52,10 @@ Written in vanilla JS.
 ## User Interface
 - [x] Only show the current player's hand
 - [x] Only show actions that the current player is allowed to take
-- [ ] User-friendly desktop layout
+- [x] User-friendly desktop layout
 - [ ] User-friendly mobile layout
 - [ ] Card designs that look like real Sabacc cards and show staves
+    - Basic version implemented
 - [ ] Star Wars inspired theme (colors & fonts)
 
 ---
