@@ -11,32 +11,44 @@
 </head>
 
 <body>
-  <div class="progress-bar">
+  <!--<div class="progress-bar">
     <span class="bar"><span id="rnd1progress"></span></span><span class="bar"><span
         id="rnd2progress"></span></span><span class="bar"><span id="rnd3progress"></span></span>
-  </div>
-  <div id="gameboard">
-    <div class="players">
-      <ul id="creditTracker"></ul>
+  </div>-->
+
+  <div class="grid gameboard">
+    <div class="title">
+      <div class="aurebesh">Corellian Spike</div>
+    </div>
+    <div class="players" id="playerTracker">
+    </div>
+    <div class="game-pot counter">
+      <div id="gamePot" class="number"></div>
+      <div class="label">Game Pot</div>
+      <div class="label aurebesh">Game Pot</div>
+    </div>
+    <div class="sabacc-pot counter">
+      <div id="sabaccPot" class="number"></div>
+      <div class="label">Sabacc Pot</div>
+      <div class="label aurebesh">Sabacc Pot</div>
     </div>
     <div class="discard-pile">
-      <h2>Discard Pile</h2>
       <div id="discard"></div>
     </div>
-    <div class="player-hand">
-      <div id="hand"></div>
+    <div class="current-bet counter">
+      <div id="currentBet" class="number"></div>
+      <div class="label">Current Bet</div>
+      <div class="label aurebesh">Current Bet</div>
     </div>
     <div class="actions">
       <div id="drawing">
-        <h2>Drawing</h2>
         <button onclick="stand()">Stand</button>
-        <button onclick="drawFromPile()">Draw From Pile (-1 Credit)</button>
-        <button onclick="swapFromPile()">Swap From Pile (-1 Credit)</button>
-        <button onclick="swapFromDiscard()">Swap From Discard (-2 Credits)</button>
+        <button onclick="drawFromPile()">Draw From Pile <span class="neg">ᖬ1</span></button>
+        <button onclick="swapFromPile()">Swap From Pile <span class="neg">ᖬ1</span></button>
+        <button onclick="swapFromDiscard()">Swap From Discard <span class="neg">ᖬ2</span></button>
       </div>
 
       <div id="betting">
-        <h2>Betting</h2>
         <button onclick="check()" id="check">Check</button>
         <span id="bet">
           <button onclick="bet(1)">Bet (1)</button>
@@ -50,18 +62,7 @@
         <button onclick="allIn()" id="allIn">ALL IN</button>
       </div>
     </div>
-    <div class="game-pot">
-      <p>Current Bet: <span id="currentBet"></span>
-      </p>
-      <p>Game Pot: <span id="gamePot">0</span>
-      </p>
-    </div>
-    <div class="sabacc-pot">
-      <p>Sabacc Pot: <span id="sabaccPot">0</span>
-      </p>
-    </div>
-    <div class="title">
-      <h1>Corellian <span style="color:gold; font-style: italic;">Spike</span></h1>
+    <div class="player-hand" id="hand">
     </div>
     <div class="game-info">
       <button onclick="newGame()">Reset Game</button>

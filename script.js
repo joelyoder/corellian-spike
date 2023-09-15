@@ -142,7 +142,7 @@ function updateGameUI() {
     document.getElementById('sabaccPot').innerText = sabaccPot;
     document.getElementById('currentBet').innerText = currentBet;
 
-    renderCreditTracker();
+    renderPlayerTracker();
 
     // Game State
     document.getElementById('currentRound').innerText = currentRound;
@@ -221,25 +221,40 @@ function updateGameUI() {
     }
 }
 
-function renderCreditTracker() {
-    // Reset the credit tracker
-    document.getElementById('creditTracker').innerHTML = '';
+function renderPlayerTracker() {
+    // Reset the html
+    document.getElementById('playerTracker').innerHTML = '';
 
     // Set up the credit tracker UI
     for (let i = 0; i < playerCount; i++) {
-        let playerCreditTracker = document.createElement('li');
-        playerCreditTracker.innerText = `Player ${i + 1} Credits: ` + players[i].Credits;
-		document.getElementById('creditTracker').appendChild(playerCreditTracker);
+        let playerCard = document.createElement('div');
+        playerCard.className = "playercard";
+
+        let playerName = document.createElement('div');
+        playerName.className = "name";
+        playerName.innerText = `Player ${i + 1}`;
+
+        let playerCredits = document.createElement('div');
+        playerCredits.className = "credits";
+        playerCredits.innerText = `ᖬ` + players[i].Credits;
+
+        if (players[i].HasJunked === true || players[i].IsOut === true) {
+            playerCard.className = "playercard out";
+        }
+
+        if (currentPlayer === i) {
+            playerCard.className = "playercard active";
+        }
+
+        playerCard.appendChild(playerName);
+        playerCard.appendChild(playerCredits);
+		document.getElementById('playerTracker').appendChild(playerCard);
     }
 }
 
 function renderHand() {
     // Reset the hands
     document.getElementById('hand').innerHTML = '';
-
-    // Set up the credit tracker UI
-    let heading = document.createElement('h2');
-    heading.innerText = `Player ${currentPlayer + 1} Hand`;
 
     let container = document.createElement('div');
     container.className = `container`;
@@ -262,19 +277,27 @@ function renderHand() {
         card.className = "card " + players[currentPlayer].Hand[x].Stave + " " + cardType;
         value.className = "value";
 
-        value.innerText = players[currentPlayer].Hand[x].Value;
+        let cardValue;
+        if (players[currentPlayer].Hand[x].Value === 0) {
+            cardValue = `🟈`;
+        } else {
+            cardValue = players[currentPlayer].Hand[x].Value;
+        }
+        
+
+        value.innerText = cardValue;
         card.appendChild(value);
         container.appendChild(card);
 
         handValues.push(players[currentPlayer].Hand[x].Value);
     }
 
-    let handTotal = document.createElement('p');
+    let handTotal = document.createElement('div');
     handTotal.innerHTML = `Hand total: <strong>${handValues.reduce((a, b) => a + b, 0)}</strong>`;
+    handTotal.className = "handtotal";
 
-    document.getElementById('hand').appendChild(heading);
-    document.getElementById('hand').appendChild(handTotal);
     document.getElementById('hand').appendChild(container);
+    document.getElementById('hand').appendChild(handTotal);
 }
 
 // Turn Taking
@@ -372,7 +395,7 @@ function resetBetting() {
 // The Card Deck
 const staves = ['circles', 'triangles', 'squares'];
 const values = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10];
-const sylopsNumber = 2;
+const sylopNumber = 2;
 
 // Deck management
 function getDeck() {
@@ -387,9 +410,9 @@ function getDeck() {
         }
     }
 
-    // Add in our two sylops cards
-    for (let s = 0; s < sylopsNumber; s++) {
-        let card = {Value: 0, Stave: 'sylops'};
+    // Add in our two sylop cards
+    for (let s = 0; s < sylopNumber; s++) {
+        let card = {Value: 0, Stave: 'sylop'};
         deck.push(card);
     }
 
@@ -732,7 +755,7 @@ function rollSpike() {
 
 // Progress Bar
 function updateProgressBar() {
-    if (currentRound === 1) {
+    /*if (currentRound === 1) {
         switch (currentStage) {
             case 1:
                 document.getElementById("rnd1progress").style.width = "0%";
@@ -770,7 +793,7 @@ function updateProgressBar() {
             default:
                 // Do nothing
         }
-    }
+    }*/
 }
 
 // Misc utilities

@@ -1,84 +1,257 @@
+/*@font-face {
+    font-family: 'aurebesh_cantina_bold_italic';
+    src: url('aurebesh_cantina_bold_italic-webfont.woff2') format('woff2'),
+        url('aurebesh_cantina_bold_italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'aurebesh_cantina_italic';
+    src: url('aurebesh_cantina_italic-webfont.woff2') format('woff2'),
+        url('aurebesh_cantina_italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}*/
+
+@font-face {
+    font-family: 'aurebesh_cantina_regular';
+    src: url('aurebesh_cantina-webfont.woff2') format('woff2'),
+        url('-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'aurebesh_cantina_bold';
+    src: url('aurebesh-cantina-bold-webfont.woff2') format('woff2'),
+        url('aurebesh-cantina-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'stellar_bold';
+    src: url('stellar-bold-webfont.woff2') format('woff2'),
+        url('stellar-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+/*@font-face {
+    font-family: 'stellar_light';
+    src: url('stellar-light-webfont.woff2') format('woff2'),
+        url('stellar-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'stellar_medium';
+    src: url('stellar-medium-webfont.woff2') format('woff2'),
+        url('stellar-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}*/
+
+@font-face {
+    font-family: 'stellar_regular';
+    src: url('stellar-regular-webfont.woff2') format('woff2'),
+        url('stellar-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'almost_there_numeric';
+    src: url('almostthere-numeric.woff2') format('woff2'),
+        url('almostthere-numeric.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --card-shape: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    --pos: green;
-    --neg: red;
-    --sylops: goldenrod;
+    --pos: #00A264;
+    --neg: #FF2606;
+    --sylop: #F5ED17;
+    --background: #000;
 }
 
 body {
-    background-color: #0d1117;
+    background-color: var(--background);
     color: white;
     margin: 0;
+    font-family: 'stellar_regular';
 }
 
-#gameboard {
+.grid {
+    height: 100vh;
+    width: 100vw;
     display: grid;
-    grid-template-columns: .5fr repeat(3, 1fr);
-    grid-template-rows: repeat(6, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    min-height: 1vh;
-    min-width: 1vw;
-    padding: 5px;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-gap: 1px;
 }
 
 .players {
-    grid-area: 1 / 2 / 2 / 5;
+    grid-area: 1 / 1 / 2 / 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.playercard {
+    padding: 1em 1.5em;
+    margin: .5em 1em;
+    text-align: center;
+}
+
+.playercard .name {
+    font-size: 1.5em;
+    padding-bottom: .2em;
+    font-family: 'aurebesh_cantina_bold';
+}
+
+.playercard .credits {
+    font-weight: bold;
+}
+
+.playercard.active {
+    background-color: var(--sylop);
+    color: var(--background);
+    border-radius: 4px;
+}
+
+.playercard.active .name {
+    font-weight: bold;
+}
+
+.playercard.out {
+    color: var(--neg);
+}
+
+.current-bet {
+    grid-area: 2 / 3 / 3 / 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-pot {
+    grid-area: 3 / 2 / 4 / 3;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    justify-content: center;
 }
 
 .discard-pile {
-    grid-area: 2 / 2 / 4 / 3;
+    grid-area: 3 / 3 / 4 / 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.player-hand {
-    grid-area: 5 / 2 / 7 / 5;
+.sabacc-pot {
+    grid-area: 3 / 4 / 4 / 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .actions {
     grid-area: 4 / 2 / 5 / 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.game-pot {
-    grid-area: 2 / 3 / 4 / 4;
-}
-
-.sabacc-pot {
-    grid-area: 2 / 4 / 4 / 5;
+.player-hand {
+    grid-area: 5 / 2 / 6 / 5;
+    display: grid;
+    align-items: bottom;
+    justify-content: center;
+    padding-bottom: 1em;
 }
 
 .title {
-    grid-area: 1 / 1 / 2 / 2;
-    padding: .5em 1em;
+    grid-area: 2 / 1 / 6 / 2;
+    padding: 1em;
+}
+
+.title .aurebesh {
+    font-size: 4em;
+    color: var(--sylop);
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: rotate(270deg);
+    transform-origin: 0 0;
 }
 
 .game-info {
-    grid-area: 2 / 1 / 5 / 2;
-}
-
-body {
-    font-family: sans-serif;
+    grid-area: 5 / 5 / 5 / 6;
+    display: grid;
+    justify-content: right;
+    padding: 1em;
 }
 
 button {
-    background-color: navy;
-    border: none;
-    color: white;
+    background-color: var(--background);
+    border: 2px solid #fff;
+    color: #fff;
+    font-family: 'stellar_bold';
     padding: 15px 32px;
+    border-radius: 48px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 5px;
+    margin: .5em;
 }
 
 button:hover {
-    background-color: blue;
+    background-color: #fff;
+    color: var(--background);
+}
+
+.aurebesh {
+    font-family: 'aurebesh_cantina_regular';
+}
+
+.neg {
+    color: var(--neg);
+}
+
+.counter .number {
+    font-family: 'almost_there_numeric';
+    font-size: 6em;
+    color: var(--sylop);
+    margin-bottom: .2em;
+}
+
+.label {
+    font-family: 'stellar_bold';
+    font-size: 1.5em;
+    margin-bottom: .2em;
+}
+
+.label.aurebesh {
+    font-family: 'aurebesh_cantina_regular';
+    color: var(--sylop);
+    font-size: 1em;
 }
 
 #discard,
 .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 20%);
+    display: flex;
+    flex-direction: row;
+    gap: 1.5em;
 }
 
 .card {
@@ -89,6 +262,11 @@ button:hover {
     height: 12em;
     width: 10em;
     background-color: white;
+}
+
+.card .value {
+    font-size: 4em;
+    font-family: 'stellar_bold';
 }
 
 .card.pos {
@@ -109,19 +287,19 @@ button:hover {
     color: var(--neg);
 }
 
-.card.sylops {
-    border-top: 15px solid var(--sylops);
-    border-bottom: 15px solid var(--sylops);
+.card.sylop {
+    border-top: 15px solid var(--sylop);
+    border-bottom: 15px solid var(--sylop);
 }
 
-.card.sylops .value {
-    color: var(--sylops);
+.card.sylop .value {
+    color: var(--sylop);
+    content: '🟈';
 }
 
-.card .value {
-    font-weight: bold;
-    font-size: 3em;
-    font-family: sans-serif;
+.handtotal {
+    text-align: center;
+    margin-top: 1.5em
 }
 
 .progress-bar {
