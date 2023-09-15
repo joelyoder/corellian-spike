@@ -75,12 +75,13 @@
     --card-shape: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     --pos: #00A264;
     --neg: #FF2606;
-    --sylop: #F5ED17;
+    --sylop: 252, 197, 89;
     --background: #000;
+    --background-gradient: linear-gradient(135deg, #000000, #080600, #0f0c00, #151100, #191500, #1d1800, #201c00, #241f00);
 }
 
 body {
-    background-color: var(--background);
+    background: var(--background-gradient);
     color: white;
     margin: 0;
     font-family: 'stellar_regular';
@@ -119,8 +120,9 @@ body {
 }
 
 .playercard.active {
-    background-color: var(--sylop);
+    background-color: rgb(var(--sylop));
     color: var(--background);
+    box-shadow: 0 0 30px 10px rgba(var(--sylop), 0.4);
     border-radius: 4px;
 }
 
@@ -130,6 +132,7 @@ body {
 
 .playercard.out {
     color: var(--neg);
+    text-shadow: var(--neg) 0px 0 8px;
 }
 
 .current-bet {
@@ -185,7 +188,7 @@ body {
 
 .title .aurebesh {
     font-size: 4em;
-    color: var(--sylop);
+    color: rgb(var(--sylop));
 
     position: absolute;
     bottom: 0;
@@ -202,7 +205,7 @@ body {
 }
 
 button {
-    background-color: var(--background);
+    background-color: #00000000;
     border: 2px solid #fff;
     color: #fff;
     font-family: 'stellar_bold';
@@ -222,6 +225,7 @@ button:hover {
 
 .aurebesh {
     font-family: 'aurebesh_cantina_regular';
+    text-shadow: rgb(var(--sylop)) 0px 0 8px;
 }
 
 .neg {
@@ -231,7 +235,8 @@ button:hover {
 .counter .number {
     font-family: 'almost_there_numeric';
     font-size: 6em;
-    color: var(--sylop);
+    color: rgb(var(--sylop));
+    text-shadow: rgb(var(--sylop)) 0px 0 8px;
     margin-bottom: .2em;
 }
 
@@ -243,7 +248,7 @@ button:hover {
 
 .label.aurebesh {
     font-family: 'aurebesh_cantina_regular';
-    color: var(--sylop);
+    color: rgb(var(--sylop));
     font-size: 1em;
 }
 
@@ -288,18 +293,19 @@ button:hover {
 }
 
 .card.sylop {
-    border-top: 15px solid var(--sylop);
-    border-bottom: 15px solid var(--sylop);
+    border-top: 15px solid rgb(var(--sylop));
+    border-bottom: 15px solid rgb(var(--sylop));
 }
 
 .card.sylop .value {
-    color: var(--sylop);
+    color: rgb(var(--sylop));
     content: '🟈';
 }
 
 .handtotal {
     text-align: center;
-    margin-top: 1.5em
+    margin-top: 1.5em;
+    color: #ffffff9f;
 }
 
 .progress-bar {

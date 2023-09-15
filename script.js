@@ -140,7 +140,6 @@ function updateGameUI() {
     // Money
     document.getElementById('gamePot').innerText = gamePot;
     document.getElementById('sabaccPot').innerText = sabaccPot;
-    document.getElementById('currentBet').innerText = currentBet;
 
     renderPlayerTracker();
 
@@ -173,9 +172,14 @@ function updateGameUI() {
     if(currentStage === 1) {
         document.getElementById("drawing").style.display = "initial";
         document.getElementById("betting").style.display = "none";
+        document.getElementsByClassName("current-bet")[0].style.display = "none";
     } else if(currentStage === 2) {
         document.getElementById("betting").style.display = "initial";
         document.getElementById("drawing").style.display = "none";
+
+        // Show the current bet
+        document.getElementsByClassName("current-bet")[0].style.display = "flex";
+        document.getElementById('currentBet').innerText = currentBet;
 
         // Ensure all of the buttons are visible by default
         document.getElementById("check").style.display = "initial";
@@ -218,6 +222,7 @@ function updateGameUI() {
     } else if(currentStage === 3) {
         document.getElementById("drawing").style.display = "none";
         document.getElementById("betting").style.display = "none";
+        document.getElementsByClassName("current-bet")[0].style.display = "none";
     }
 }
 
