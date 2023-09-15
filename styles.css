@@ -238,6 +238,7 @@ button:hover {
     color: rgb(var(--sylop));
     text-shadow: rgb(var(--sylop)) 0px 0 8px;
     margin-bottom: .2em;
+    letter-spacing: -8px;
 }
 
 .label {
@@ -250,6 +251,14 @@ button:hover {
     font-family: 'aurebesh_cantina_regular';
     color: rgb(var(--sylop));
     font-size: 1em;
+}
+
+.current-bet.counter .number {
+    margin-left: -20px;
+}
+
+.sabacc-pot.counter .number {
+    margin-left: -10px;
 }
 
 #discard,

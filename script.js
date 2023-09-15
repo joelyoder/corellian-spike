@@ -546,7 +546,7 @@ function reDeal() {
 
     for (let i = 0; i < playerCount; i++) {
         // Pull their number of cards out of our array
-        let newHand = handSizes.pop();
+        let newHand = handSizes.shift();
 
         // Deal them the same number of cards from the fresh desk
         players[i].Hand.push(...dealCards(newHand));
@@ -712,7 +712,7 @@ function junk() {
     players[currentPlayer].HasJunked = true;
 
     // Discard the player hand
-    for (let i = 0; i < players[currentPlayer].Hand.length; i++) {
+    for (let i = 0; i <= players[currentPlayer].Hand.length; i++) {
         let tempCard = players[currentPlayer].Hand.pop();
         discardCard(tempCard);
     }
