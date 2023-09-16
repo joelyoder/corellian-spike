@@ -173,8 +173,6 @@ function updateGameUI() {
             document.getElementById('currentStage').innerText = 'Error';
     }
 
-    updateProgressBar();
-
     renderHand();
 
     // Determine visibility of drawing and betting controls
@@ -770,49 +768,6 @@ function rollSpike() {
     } else {
         alert("No Spike");
     }
-}
-
-// Progress Bar
-function updateProgressBar() {
-    /*if (currentRound === 1) {
-        switch (currentStage) {
-            case 1:
-                document.getElementById("rnd1progress").style.width = "0%";
-                document.getElementById("rnd2progress").style.width = "0%";
-                document.getElementById("rnd3progress").style.width = "0%";
-            break;
-            case 2:
-                document.getElementById("rnd1progress").style.width = "16.66%";
-            break;
-            case 3:
-                document.getElementById("rnd1progress").style.width = "33.33%";
-            break;
-            default:
-                // Do nothing
-        }
-    } else if (currentRound === 2) {
-        switch (currentStage) {
-            case 2:
-                document.getElementById("rnd2progress").style.width = "16.66%";
-            break;
-            case 3:
-                document.getElementById("rnd2progress").style.width = "33.33%";
-            break;
-            default:
-                // Do nothing
-        }
-    } else if (currentRound === 3) {
-        switch (currentStage) {
-            case 2:
-                document.getElementById("rnd3progress").style.width = "16.66%";
-            break;
-            case 3:
-                document.getElementById("rnd3progress").style.width = "33.33%";
-            break;
-            default:
-                // Do nothing
-        }
-    }*/
 }
 
 // Misc utilities
