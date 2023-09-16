@@ -238,6 +238,11 @@ button:hover {
     font-family: 'stellar_bold';
 }
 
+.card.sylop .vale {
+    font-size: 5em;
+    padding-top: 15px;
+}
+
 .card.pos {
     border-top: 15px solid var(--pos);
     border-bottom: 15px solid var(--pos);
