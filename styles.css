@@ -18,13 +18,17 @@ body {
     height: 100vh;
     width: 100vw;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: .5fr 1fr 1fr .5fr;
+    grid-template-rows: repeat(4, 1fr);
     grid-gap: 1px;
 }
 
+.grid>div {
+    padding: 1em;
+}
+
 .players {
-    grid-area: 1 / 1 / 2 / 6;
+    grid-area: 1 / 1 / 2 / 5;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -72,7 +76,7 @@ body {
 .gameStatus {
     margin-top: 1.2em;
     padding-top: .8em;
-    border-top: 1px dashed rgb(var(--sylop));
+    border-top: 1px dashed rgba(var(--sylop), .5);
 }
 
 #currentRound {
@@ -83,46 +87,55 @@ body {
     padding-left: 1em;
 }
 
-.current-bet {
+.grid>.discard-pile {
+    grid-area: 2 / 2 / 3 / 3;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 4em;
+    padding-right: 2em;
+}
+
+.grid>.pots {
     grid-area: 2 / 3 / 3 / 4;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 2em;
+    padding-left: 2em;
+}
+
+.counter {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+}
+
+.counter .number {
+    font-family: 'almost_there_numeric';
+    font-size: 6em;
+    color: rgb(var(--sylop));
+    text-shadow: rgb(var(--sylop)) 0px 0 8px;
+    letter-spacing: -8px;
+    margin-left: -15px;
 }
 
 .game-pot {
-    grid-area: 3 / 2 / 4 / 3;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    justify-content: center;
-}
-
-.discard-pile {
-    grid-area: 3 / 3 / 4 / 4;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.sabacc-pot {
-    grid-area: 3 / 4 / 4 / 5;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    padding-right: 2em;
+    border-right: 1px dashed rgba(var(--sylop), .5);
 }
 
 .actions {
-    grid-area: 4 / 2 / 5 / 5;
+    grid-area: 3 / 2 / 4 / 4;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .player-hand {
-    grid-area: 5 / 2 / 6 / 5;
+    grid-area: 4 / 2 / 5 / 4;
     display: flex;
     flex-direction: column;
     align-items: bottom;
@@ -136,12 +149,11 @@ button,
 }
 
 .title {
-    grid-area: 2 / 1 / 6 / 2;
-    padding: 1em;
+    grid-area: 2 / 1 / 5 / 2;
 }
 
 .title .aurebesh {
-    font-size: 4em;
+    font-size: 2.5em;
     color: rgb(var(--sylop));
 
     position: absolute;
@@ -153,10 +165,10 @@ button,
 }
 
 .game-info {
-    grid-area: 5 / 5 / 5 / 6;
+    grid-area: 4 / 4 / 5 / 5;
     display: grid;
     justify-content: right;
-    padding: 1em;
+    align-content: end;
 }
 
 button {
@@ -192,14 +204,6 @@ button:hover {
     font-weight: normal;
 }
 
-.counter .number {
-    font-family: 'almost_there_numeric';
-    font-size: 6em;
-    color: rgb(var(--sylop));
-    text-shadow: rgb(var(--sylop)) 0px 0 8px;
-    letter-spacing: -8px;
-}
-
 .label {
     font-family: 'stellar_bold';
     font-size: 1.5em;
@@ -210,14 +214,6 @@ button:hover {
     font-family: 'aurebesh_cantina_regular';
     color: rgb(var(--sylop));
     font-size: 1em;
-}
-
-.current-bet.counter .number {
-    margin-left: -20px;
-}
-
-.sabacc-pot.counter .number {
-    margin-left: -10px;
 }
 
 #discard,

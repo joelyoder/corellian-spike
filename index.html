@@ -23,23 +23,25 @@
       <div class="gameStatus label">Round <span id="currentRound"></span> <span
           style="color: rgb(var(--sylop));">🟈</span> <span id="currentStage"></span></div>
     </div>
-    <div class="game-pot counter">
-      <div id="gamePot" class="number"></div>
-      <div class="label">Game Pot</div>
-      <div class="label aurebesh">Game Pot</div>
-    </div>
-    <div class="sabacc-pot counter">
-      <div id="sabaccPot" class="number"></div>
-      <div class="label">Sabacc Pot</div>
-      <div class="label aurebesh">Sabacc Pot</div>
+    <div class="pots">
+      <div class="counter game-pot">
+        <div id="gamePot" class="number"></div>
+        <div class="label">Game Pot</div>
+        <div class="label aurebesh">Game Pot</div>
+      </div>
+      <div class="counter sabacc-pot">
+        <div id="sabaccPot" class="number"></div>
+        <div class="label">Sabacc Pot</div>
+        <div class="label aurebesh">Sabacc Pot</div>
+      </div>
     </div>
     <div class="discard-pile">
+      <div class="current-bet counter">
+        <div id="currentBet" class="number"></div>
+        <div class="label">Current Bet</div>
+        <div class="label aurebesh">Current Bet</div>
+      </div>
       <div id="discard"></div>
-    </div>
-    <div class="current-bet counter">
-      <div id="currentBet" class="number"></div>
-      <div class="label">Current Bet</div>
-      <div class="label aurebesh">Current Bet</div>
     </div>
     <div class="actions">
       <div id="drawing">
