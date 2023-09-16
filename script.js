@@ -87,7 +87,7 @@ function endGame() {
         }
 
         // Give players an impossibly high score if they're out of the game
-        // TODO: When side pots are implemented, ensure
+        // TODO: When side pots are implemented, ensure those are accounted for
         if (players[i].HasJunked === true || players[i].IsOut === true) {
             playerScore = 1000;
         }
@@ -99,8 +99,7 @@ function endGame() {
         absScores.push(Math.abs(playerScore));
     }
 
-    function indexOfWinner(a) {
-        // Finds the lowest number while ignoring players that are sitting out. Does not handle ties accurately yet
+    function getLowest(a) {
         let lowest = 0;
         for (let i = 1; i < a.length; i++) {
             if (a[i] < a[lowest]) lowest = i;
@@ -108,7 +107,62 @@ function endGame() {
         return lowest;
     }
 
-    let winner = indexOfWinner(absScores);
+    function getHighest(a) {
+        let highest = 0;
+        for (let i = 1; i < a.length; i++) {
+            if (a[i] > a[highest]) highest = i;
+        }
+        return highest;
+    }
+    
+    // Get the lowest possible score
+    let lowestScoreIndex = getLowest(absScores);
+
+    // Get an array of all scroes with that same value
+    let contenders = getAllIndexes(absScores, absScores[lowestScoreIndex]);
+
+    console.log("Final scores: " + finalScores);
+    console.log("Initial contenders: " + contenders);
+
+    let winner;
+
+    // Check to see if that array has multiple scores, if it doesn't declare a winner immediately
+    if (contenders.length > 1) {
+        // If there are multiple, make a list of all their handsizes
+        let handSizes = [];
+
+        for (let i = 0; i < contenders.length; i++) {
+            handSizes.push(players[contenders[i]].Hand.length);
+        }
+
+        console.log("Winner hand sizes: " + handSizes);
+
+        // Get the highest hand size from that list
+        let highestHandContender = contenders[getHighest(handSizes)];
+
+        console.log("Highest hand size index: " + highestHandContender);
+
+        // Remove any contenders with a lower hand size than that
+        for (let x = 0; x < contenders.length; x++) {
+            if (players[contenders[x]].Hand.length < players[highestHandContender].Hand.length) {
+                contenders.splice(x, 1);
+            }
+        }
+
+        console.log("New list of contenders: " + contenders);
+
+        if (contenders.length > 1) {
+            
+            // CONTINUE FROM HERE
+            winner = contenders[0];
+        } else {
+            winner = contenders[0];
+        }
+    } else {
+        winner = contenders[0];
+    }
+
+    //let winner = getLowest(absScores);
 
     alert(`Game over! Final Scores: ${finalScores}. The winner is Player ${winner + 1}!`);
 
@@ -800,4 +854,12 @@ function loopUntilCorrectNumber(promptQuestion, maxValue) {
         
       alert("Please enter a valid number");
     }
+}
+
+function getAllIndexes(arr, val) {
+    let indexes = [], i;
+    for(i = 0; i < arr.length; i++)
+        if (arr[i] === val)
+            indexes.push(i);
+    return indexes;
 }

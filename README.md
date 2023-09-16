@@ -56,7 +56,7 @@ Written in vanilla JS.
 - [ ] User-friendly mobile layout
 - [ ] Card designs that look like real Sabacc cards and show staves
     - Basic version implemented
-- [ ] Star Wars inspired theme (colors & fonts)
+- [x] Star Wars inspired theme (colors & fonts)
 
 ---
 
