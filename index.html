@@ -23,7 +23,10 @@
     <div class="title">
       <div class="aurebesh">CORELLIAN SPIKE</div>
     </div>
-    <div class="players" id="playerTracker">
+    <div class="players">
+      <div id="playerTracker"></div>
+      <div class="gameStatus label">Round <span id="currentRound"></span> <span
+          style="color: rgb(var(--sylop));">🟈</span> <span id="currentStage"></span></div>
     </div>
     <div class="game-pot counter">
       <div id="gamePot" class="number"></div>
@@ -55,10 +58,10 @@
       <div id="betting">
         <button onclick="check()" id="check">Check</button>
         <span id="bet">
-          <button onclick="bet(1)">Bet (1)</button>
-          <button onclick="bet(50)">Bet (50)</button>
-          <button onclick="bet(100)">Bet (100)</button>
-          <button onclick="bet(0)">Bet (custom)</button>
+          <button onclick="bet(1)">Bet <span class="neg"><span class="credit">$</span>1</span></button>
+          <button onclick="bet(50)">Bet <span class="neg"><span class="credit">$</span>50</span></button>
+          <button onclick="bet(100)">Bet <span class="neg"><span class="credit">$</span>100</span></button>
+          <button onclick="bet(0)">Input Bet</button>
         </span>
         <button onclick="call()" id="call">Call</button>
         <button onclick="raise()" id="raise">Raise</button>
@@ -66,16 +69,14 @@
         <button onclick="allIn()" id="allIn">ALL IN</button>
       </div>
     </div>
-    <div class="player-hand" id="hand">
+    <div class="player-hand">
+      <button onclick="showHide('hand', 'grid'); showHide('showhand');" id="showhand">Show
+        Hand</button>
+      <div id="hand" style="display: none;"></div>
     </div>
     <div class="game-info">
       <button onclick="newGame()">Reset Game</button>
-      <button onclick="endGame()">Game End</button>
-      <p>
-        Round <span id="currentRound"></span><br />
-        <span id="currentStage"></span> Stage<br />
-        Player <span id="currentPlayer"></span>'s Turn
-      </p>
+      <button onclick="setupGame()">Start Custom Game</button>
     </div>
   </div>
 

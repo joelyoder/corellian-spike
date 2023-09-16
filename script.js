@@ -9,13 +9,13 @@ let deck = new Array();
 let discard = new Array();
 
 // Defaults
-const startingCredits = 410;
+let startingCredits = 410;
 const gameAnte = 1;
 const sabaccAnte = 2;
 const raiseLimit = 3;
 
 // Players
-const playerCount = 4;
+let playerCount = 4;
 let players = new Array();
 
 // Game State
@@ -32,6 +32,16 @@ function load()
 }
 
 window.addEventListener('load', load);
+
+// Allow users to start a new game and define starting vars
+function setupGame() {
+    playerCount = loopUntilCorrectNumber('How many people are playing?', 6);
+    startingCredits = loopUntilCorrectNumber('How many credits should they start with?', 10000);
+
+    players = new Array();
+
+    newGame();
+}
 
 // Game Setup
 function newGame() {
@@ -145,12 +155,11 @@ function updateGameUI() {
 
     // Game State
     document.getElementById('currentRound').innerText = currentRound;
-    document.getElementById('currentPlayer').innerText = (currentPlayer + 1);
     document.getElementById('currentRound').innerText = currentRound;
 
     switch (currentStage) {
         case 1:
-            document.getElementById('currentStage').innerText = 'Draw';
+            document.getElementById('currentStage').innerText = 'Drawing';
             break;
         case 2:
             document.getElementById('currentStage').innerText = 'Betting';
@@ -176,6 +185,9 @@ function updateGameUI() {
     } else if(currentStage === 2) {
         document.getElementById("betting").style.display = "initial";
         document.getElementById("drawing").style.display = "none";
+
+        document.getElementById("call").innerHTML = `Call <span class="neg"><span class="credit">$</span>${currentBet - players[currentPlayer].LastBet}</span>`;
+        document.getElementById("allIn").innerHTML = `ALL IN <span class="neg"><span class="credit">$</span>${players[currentPlayer].Credits}</span>`;
 
         // Show the current bet
         document.getElementsByClassName("current-bet")[0].style.display = "flex";
@@ -260,6 +272,8 @@ function renderPlayerTracker() {
 function renderHand() {
     // Reset the hands
     document.getElementById('hand').innerHTML = '';
+    document.getElementById('hand').style.display = 'none';
+    document.getElementById('showhand').style.display = 'inline-block';
 
     let container = document.createElement('div');
     container.className = `container`;
@@ -665,7 +679,7 @@ function check() {
 function bet(amount) {
     if (amount === 0) {
     // Get their bet
-    amount = parseInt(loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits));
+    amount = loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits);
     }
 
     // If they put in everything they have, ensure they're considered all in
@@ -693,7 +707,7 @@ function call() {
 
 function raise() {
     // Get their bet
-    let raiseAmount = parseInt(loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits));
+    let raiseAmount = loopUntilCorrectNumber(`How many credits would you like to bet? Your current balance: ${players[currentPlayer].Credits}`, players[currentPlayer].Credits);
 
     // Update the current bet
     currentBet += raiseAmount;
@@ -826,7 +840,7 @@ function loopUntilCorrectNumber(promptQuestion, maxValue) {
       retval = (prompt(promptQuestion));
       
       if (!isNaN(retval) && retval > 0 && retval <= maxValue) {
-        return retval;
+        return parseInt(retval);
       }
         
       alert("Please enter a valid number");

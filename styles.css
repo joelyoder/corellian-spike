@@ -26,6 +26,13 @@ body {
 .players {
     grid-area: 1 / 1 / 2 / 6;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#playerTracker {
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -60,6 +67,20 @@ body {
 .playercard.out {
     color: var(--neg);
     text-shadow: var(--neg) 0px 0 8px;
+}
+
+.gameStatus {
+    margin-top: 1.2em;
+    padding-top: .8em;
+    border-top: 1px dashed rgb(var(--sylop));
+}
+
+#currentRound {
+    padding-right: 1em;
+}
+
+#currentStage {
+    padding-left: 1em;
 }
 
 .current-bet {
@@ -102,10 +123,16 @@ body {
 
 .player-hand {
     grid-area: 5 / 2 / 6 / 5;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     align-items: bottom;
     justify-content: center;
     padding-bottom: 1em;
+}
+
+button,
+#hand {
+    align-self: center;
 }
 
 .title {
@@ -170,7 +197,6 @@ button:hover {
     font-size: 6em;
     color: rgb(var(--sylop));
     text-shadow: rgb(var(--sylop)) 0px 0 8px;
-    margin-bottom: .2em;
     letter-spacing: -8px;
 }
 
