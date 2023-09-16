@@ -1,76 +1,3 @@
-/*@font-face {
-    font-family: 'aurebesh_cantina_bold_italic';
-    src: url('aurebesh_cantina_bold_italic-webfont.woff2') format('woff2'),
-        url('aurebesh_cantina_bold_italic-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'aurebesh_cantina_italic';
-    src: url('aurebesh_cantina_italic-webfont.woff2') format('woff2'),
-        url('aurebesh_cantina_italic-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}*/
-
-@font-face {
-    font-family: 'aurebesh_cantina_regular';
-    src: url('aurebesh_cantina-webfont.woff2') format('woff2'),
-        url('-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'aurebesh_cantina_bold';
-    src: url('aurebesh-cantina-bold-webfont.woff2') format('woff2'),
-        url('aurebesh-cantina-bold-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'stellar_bold';
-    src: url('stellar-bold-webfont.woff2') format('woff2'),
-        url('stellar-bold-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-/*@font-face {
-    font-family: 'stellar_light';
-    src: url('stellar-light-webfont.woff2') format('woff2'),
-        url('stellar-light-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'stellar_medium';
-    src: url('stellar-medium-webfont.woff2') format('woff2'),
-        url('stellar-medium-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}*/
-
-@font-face {
-    font-family: 'stellar_regular';
-    src: url('stellar-regular-webfont.woff2') format('woff2'),
-        url('stellar-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'almost_there_numeric';
-    src: url('almostthere-numeric.woff2') format('woff2'),
-        url('almostthere-numeric.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
 :root {
     --card-shape: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     --pos: #00A264;
@@ -195,6 +122,7 @@ body {
     left: 0;
     transform: rotate(270deg);
     transform-origin: 0 0;
+    font-family: 'aurebesh_afcanon';
 }
 
 .game-info {
@@ -230,6 +158,11 @@ button:hover {
 
 .neg {
     color: var(--neg);
+}
+
+.credit {
+    font-family: 'aurebesh_afcanon';
+    font-weight: normal;
 }
 
 .counter .number {

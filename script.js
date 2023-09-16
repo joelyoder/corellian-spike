@@ -241,7 +241,7 @@ function renderPlayerTracker() {
 
         let playerCredits = document.createElement('div');
         playerCredits.className = "credits";
-        playerCredits.innerText = `ᖬ` + players[i].Credits;
+        playerCredits.innerHTML = '<span class="credit">$</span>' + players[i].Credits;
 
         if (players[i].HasJunked === true || players[i].IsOut === true) {
             playerCard.className = "playercard out";

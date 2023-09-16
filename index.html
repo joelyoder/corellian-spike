@@ -6,8 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Corellian Spike</title>
-  <link rel="stylesheet" href="styles.css">
-  <!--<script src="https://cdn.tailwindcss.com"></script>-->
+  <link rel="stylesheet" href="./fonts/aurebeshaf.css" type="text/css">
+  <link rel="stylesheet" href="./fonts/almostthere-numeric.css" type="text/css">
+  <link rel="stylesheet" href="./fonts/aurebesh_cantina.css" type="text/css">
+  <link rel="stylesheet" href="./fonts/stellar.css" type="text/css">
+  <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
 
 <body>
@@ -18,7 +21,7 @@
 
   <div class="grid gameboard">
     <div class="title">
-      <div class="aurebesh">Corellian Spike</div>
+      <div class="aurebesh">CORELLIAN SPIKE</div>
     </div>
     <div class="players" id="playerTracker">
     </div>
@@ -43,9 +46,10 @@
     <div class="actions">
       <div id="drawing">
         <button onclick="stand()">Stand</button>
-        <button onclick="drawFromPile()">Draw From Pile <span class="neg">ᖬ1</span></button>
-        <button onclick="swapFromPile()">Swap From Pile <span class="neg">ᖬ1</span></button>
-        <button onclick="swapFromDiscard()">Swap From Discard <span class="neg">ᖬ2</span></button>
+        <button onclick="drawFromPile()">Draw From Pile <span class="neg"><span class="credit">$</span>1</span></button>
+        <button onclick="swapFromPile()">Swap From Pile <span class="neg"><span class="credit">$</span>1</span></button>
+        <button onclick="swapFromDiscard()">Swap From Discard <span class="neg"><span
+              class="credit">$</span>2</span></button>
       </div>
 
       <div id="betting">
