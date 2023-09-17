@@ -63,13 +63,87 @@ function newGame() {
             HasBet:false,
             AllIn:false,
             HasJunked:false,
-            IsOut:false
+            IsOut:false,
+            HasWon:false
         };
     }
     
     newDeal();
     anteUp();
     updateGameUI();
+}
+
+function getWinner() {
+    // Set up a new array that will be used to filter down through the win conditions
+    let contenders = new Array();
+
+    // Assign valid players to the contenders list and populate their values
+    for (let i = 0; i < playerCount; i++) {
+        // Cannot be out, junked, or have already won a pot (i.e. an all in player has won the game pot)
+        if (players[i].HasJunked === false && players[i].IsOut === false && players[i].HasWon === false) {
+
+            let playerScore = 0;
+
+            // Calculate their final score by adding up their hand
+            for (let x = 0; x < players[i].Hand.length; x++) {
+                let temp = players[i].Hand[x].Value;
+                playerScore += parseFloat(temp);
+            }
+
+            // Store all of the relevant data needed to calculate the win conditions
+            let playerData = {
+                PlayerID: i,
+                FinalScore: playerScore,
+                AbsScore: Math.abs(playerScore),
+                HandSize: players[i].Hand.length,
+                Hand: players[i].Hand,
+            }
+
+            contenders.push(playerData);
+        }
+    }
+        
+    // CONDITION 1: The lowest score wins
+    let lowest = 0;
+
+    // Find the lowest absolute score
+    for (let i = 1; i < contenders.length; i++) {
+        if (contenders[i].AbsScore < contenders[lowest].AbsScore) lowest = i;
+    }
+
+    // Remove any contenders with a higher absolute score
+    for (let i = 0; i < contenders.length; i++) {
+        if (contenders[i].AbsScore > contenders[lowest].AbsScore) {
+            contenders.splice(i, 1);
+            i--;
+        }
+    }
+
+    /*
+    // CONDITION 2: The largest hand wins
+    let highest = 0;
+
+    // Find the highest hand size
+    for (let i = 1; i < contenders.length; i++) {
+        if (contenders[i].HandSize > contenders[highest].HandSize) highest = i;
+    }
+
+    // Remove any contenders with a lower hand size
+    for (let i = 0; i < contenders.length; i++) {
+        if (contenders[i].HandSize < contenders[highest].HandSize) {
+            contenders.splice(i, 1);
+            i--;
+        }  
+    }
+    */
+
+    // CONDITION 3: A positive score beats a negative one
+
+    // CONDITION 4: Specific hand combinations are better than others
+    
+
+    //return contenders[0].PlayerID;
+    return contenders;
 }
 
 function endGame() {
