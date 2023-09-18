@@ -143,6 +143,45 @@ function testing(testCase) {
         players[3].Hand[0] = {Value: -10};
         players[3].Hand[1] = {Value: -4};
     }
+
+    // Pure Sabacc
+    if (testCase === "puresabacc") {
+        // -8
+        players[0].Hand[0] = {Value: -4};
+        players[0].Hand[1] = {Value: -4};
+        // 0 - Pure Sabacc
+        players[1].Hand[0] = {Value: 0};
+        players[1].Hand[1] = {Value: 0};
+        // 0 - Sabacc
+        players[2].Hand[0] = {Value: 4};
+        players[2].Hand[1] = {Value: -4};
+        // 0 - Sabacc with hand advantage
+        players[3].Hand[0] = {Value: -10};
+        players[3].Hand[1] = {Value: 0};
+        players[3].Hand[2] = {Value: 10};
+    }
+
+    // Gee Whiz!
+    if (testCase === "geewiz") {
+        // 0 - Gee Whiz version 1
+        players[0].Hand[0] = {Value: 1};
+        players[0].Hand[1] = {Value: 2};
+        players[0].Hand[2] = {Value: 3};
+        players[0].Hand[3] = {Value: 4};
+        players[0].Hand[4] = {Value: -10};
+        // 0 - Gee Whiz version 2
+        players[1].Hand[0] = {Value: -1};
+        players[1].Hand[1] = {Value: -2};
+        players[1].Hand[2] = {Value: -3};
+        players[1].Hand[3] = {Value: -4};
+        players[1].Hand[4] = {Value: 10};
+        // 4
+        players[2].Hand[0] = {Value: 4};
+        players[2].Hand[1] = {Value: 0};
+        // -14
+        players[3].Hand[0] = {Value: -10};
+        players[3].Hand[1] = {Value: -4};
+    }
 }
 
 function getWinner() {
@@ -155,6 +194,7 @@ function getWinner() {
         if (players[i].HasJunked === false && players[i].IsOut === false && players[i].HasWon === false) {
 
             let playerScore = 0;
+            let playerHand = [];
 
             // Calculate their final score by adding up their hand
             for (let x = 0; x < players[i].Hand.length; x++) {
@@ -162,80 +202,172 @@ function getWinner() {
                 playerScore += parseFloat(temp);
             }
 
+            // Staves do not matter, so move the values into an array
+            for (let x = 0; x < players[i].Hand.length; x++) {
+                let temp = players[i].Hand[x].Value;
+                playerHand.push(temp);
+            }
+
+            // Sort the player hands to make them easier to compare against
+            playerHand.sort((a, b) => a - b);
+
             // Store all of the relevant data needed to calculate the win conditions
             let playerData = {
                 PlayerID: i,
                 FinalScore: playerScore,
                 AbsScore: Math.abs(playerScore),
                 HandSize: players[i].Hand.length,
-                Hand: players[i].Hand,
+                Hand: playerHand,
+                HandRank: 0
             }
 
             contenders.push(playerData);
         }
     }
-        
-    // CONDITION 1: The lowest score wins
-    let lowest = 0;
 
-    // Find the lowest absolute score
-    for (let i = 1; i < contenders.length; i++) {
-        if (contenders[i].AbsScore < contenders[lowest].AbsScore) lowest = i;
+    // If there are multiple players in the running to win, assign ranks to their hands. Otherwise, congrats on the bluff!
+    if (contenders.length > 1) {
+        rankHands();
+    } else {
+        return contenders[0];
     }
 
-    let lowestScore = contenders[lowest].AbsScore;
+    // Compare all of the hands to determine the best rank
+    // Check to make sure there are no ties before assigning a winner
+    // If none of the players have a high enough rank, run resolveTies()
 
-    // Remove any contenders with a higher absolute score
-    for (let i = 0; i < contenders.length; i++) {
-        if (contenders[i].AbsScore > lowestScore) {
-            contenders.splice(i, 1);
-            i--;
+    function rankHands() {
+        for (let i = 0; i < contenders.length; i++) {
+            switch (contenders[i].Hand.join()) {
+                // Pure Sabacc
+                // Both sylops and no other cards, totaling zero
+                case "0,0":
+                    contenders[i].HandRank = 1;
+                    break;
+                // Full Sabacc
+                // A sylop and four tens (two positive, two negative) totaling zero
+                case "-10,-10,0,10,10":
+                    contenders[i].HandRank = 2;
+                    break;
+                // Fleet
+                // A sylop and four of a kind that aren’t tens (two positive, two negative) totaling zero
+                case "tbd":
+                    contenders[i].HandRank = 3;
+                    break;
+                // Prime Sabacc
+                // A sylop and a pair of tens (one positive, one negative) totaling zero
+                case "-10,0,10":
+                    contenders[i].HandRank = 4;
+                    break;
+                // Yee-haa
+                // A sylop and a pair that aren’t tens (one positive, one negative) totaling zero
+                case "tbd":
+                    contenders[i].HandRank = 5;
+                    break;
+                // Rhylet
+                // Positive three of a kind and a negative pair (or vice versa) totaling zero
+                case "tbd":
+                    contenders[i].HandRank = 6;
+                    break;
+                // Squadron
+                // Four of a kind (two positive, two negative) totaling zero
+                case "tbd":
+                    contenders[i].HandRank = 7;
+                    break;
+                // Gee Whiz!
+                case "-4,-3,-2,-1,10":
+                    contenders[i].HandRank = 8;
+                    break;
+                case "-10,1,2,3,4":
+                    contenders[i].HandRank = 8;
+                    break;
+                // Straight Khyron
+                // A sequential run of four cards, totaling zero.
+                case "tbd":
+                    contenders[i].HandRank = 9;
+                    break;
+                // Banthas Wild
+                // Three of a kind (plus one or two other cards) totaling zero
+                case "tbd":
+                    contenders[i].HandRank = 10;
+                    break;
+                // Rule of Two
+                // Two pairs with a total hand value of zero (may or may not contain a fifth card)
+                case "tbd":
+                    contenders[i].HandRank = 11;
+                    break;
+                // Sabacc or Nulrhek - if no player ranks higher than this, resolveTies will decide the winner
+                default:
+                    contenders[i].HandRank = 12;
+                    break;
+            }
         }
     }
 
-    
+    function resolveTies() {
+        // The lowest score wins
+        let lowest = 0;
 
-    // CONDITION 2: The largest hand wins
-    let largest = 0;
+        // Find the lowest absolute score
+        for (let i = 1; i < contenders.length; i++) {
+            if (contenders[i].AbsScore < contenders[lowest].AbsScore) lowest = i;
+        }
 
-    // Find the largest hand size
-    for (let i = 1; i < contenders.length; i++) {
-        if (contenders[i].HandSize > contenders[largest].HandSize) largest = i;
+        let lowestScore = contenders[lowest].AbsScore;
+
+        // Remove any contenders with a higher absolute score
+        for (let i = 0; i < contenders.length; i++) {
+            if (contenders[i].AbsScore > lowestScore) {
+                contenders.splice(i, 1);
+                i--;
+            }
+        }
+
+        // A positive score beats a negative one
+        let positive = 0;
+
+        // If a number is positive, it will become the positive check - otherwise this will be a negative number if all are
+        for (let i = 1; i < contenders.length; i++) {
+            if (contenders[i].FinalScore > contenders[positive].FinalScore) positive = i;
+        }
+
+        let mostPositive = contenders[positive].FinalScore;
+
+        // Remove any contenders with less positivity than the control
+        for (let i = 0; i < contenders.length; i++) {
+            if (contenders[i].FinalScore < mostPositive) {
+                contenders.splice(i, 1);
+                i--;
+            } 
+        }
+
+        // The largest hand wins
+        let largest = 0;
+
+        // Find the largest hand size
+        for (let i = 1; i < contenders.length; i++) {
+            if (contenders[i].HandSize > contenders[largest].HandSize) largest = i;
+        }
+
+        let largestHand = contenders[largest].HandSize;
+
+        // Remove any contenders with a lower hand size
+        for (let i = 0; i < contenders.length; i++) {
+            if (contenders[i].HandSize < largestHand) {
+                contenders.splice(i, 1);
+                i--;
+            }  
+        }
+
+        // TODO:Highest total value of all positive cards
+
+        // TODO:Highest single positive card value
     }
 
-    let largestHand = contenders[largest].HandSize;
+    // If all else fails, the rules say that a blind draw should be the tiebreaker.
 
-    // Remove any contenders with a lower hand size
-    for (let i = 0; i < contenders.length; i++) {
-        if (contenders[i].HandSize < largestHand) {
-            contenders.splice(i, 1);
-            i--;
-        }  
-    }
-
-    // CONDITION 3: A positive score beats a negative one
-    let positive = 0;
-
-    // If a number is positive, it will become the positive check - otherwise this will be a negative number if all are
-    for (let i = 1; i < contenders.length; i++) {
-        if (contenders[i].FinalScore > contenders[positive].FinalScore) positive = i;
-    }
-
-    let mostPositive = contenders[positive].FinalScore;
-
-    // Remove any contenders with less positivity than the control
-    for (let i = 0; i < contenders.length; i++) {
-        if (contenders[i].FinalScore < mostPositive) {
-            contenders.splice(i, 1);
-            i--;
-        }  
-    }
-
-    // CONDITION 4: Specific hand combinations are better than others
-    
-
-    return contenders[0];
-    //return contenders;
+    //return contenders[0];
+    return contenders;
 }
 
 function endGame() {
