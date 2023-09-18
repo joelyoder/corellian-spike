@@ -73,6 +73,78 @@ function newGame() {
     updateGameUI();
 }
 
+function testing(testCase) {
+    for (let i = 0; i < playerCount; i++) {
+        players[i].Hand = new Array();
+    }
+
+    // Score winner
+    if (testCase === 1) {
+        // 5
+        players[0].Hand[0] = {Value: 2};
+        players[0].Hand[1] = {Value: 3};
+        // -4
+        players[1].Hand[0] = {Value: -2};
+        players[1].Hand[1] = {Value: -1};
+        players[1].Hand[2] = {Value: -1};
+        // 15
+        players[2].Hand[0] = {Value: 10};
+        players[2].Hand[1] = {Value: 5};
+        // -10
+        players[3].Hand[0] = {Value: -10};
+        players[3].Hand[1] = {Value: 0};
+    }
+
+    // Handsize winner
+    if (testCase === 2) {
+        // 4
+        players[0].Hand[0] = {Value: 2};
+        players[0].Hand[1] = {Value: 2};
+        // -4
+        players[1].Hand[0] = {Value: -2};
+        players[1].Hand[1] = {Value: -1};
+        players[1].Hand[2] = {Value: -1};
+        // 15
+        players[2].Hand[0] = {Value: 10};
+        players[2].Hand[1] = {Value: 5};
+        // -10
+        players[3].Hand[0] = {Value: -10};
+        players[3].Hand[1] = {Value: 0};
+    }
+
+    // Single Positive winner
+    if (testCase === 3) {
+        // 4
+        players[0].Hand[0] = {Value: 2};
+        players[0].Hand[1] = {Value: 2};
+        // -4
+        players[1].Hand[0] = {Value: -3};
+        players[1].Hand[1] = {Value: -1};
+        // 15
+        players[2].Hand[0] = {Value: 10};
+        players[2].Hand[1] = {Value: 5};
+        // -10
+        players[3].Hand[0] = {Value: -10};
+        players[3].Hand[1] = {Value: 0};
+    }
+
+    // Multiple positive winner
+    if (testCase === 4) {
+        // 4
+        players[0].Hand[0] = {Value: 2};
+        players[0].Hand[1] = {Value: 2};
+        // -4
+        players[1].Hand[0] = {Value: -2};
+        players[1].Hand[1] = {Value: -2};
+        // 4
+        players[2].Hand[0] = {Value: 4};
+        players[2].Hand[1] = {Value: 0};
+        // -14
+        players[3].Hand[0] = {Value: -10};
+        players[3].Hand[1] = {Value: -4};
+    }
+}
+
 function getWinner() {
     // Set up a new array that will be used to filter down through the win conditions
     let contenders = new Array();
@@ -111,141 +183,72 @@ function getWinner() {
         if (contenders[i].AbsScore < contenders[lowest].AbsScore) lowest = i;
     }
 
+    let lowestScore = contenders[lowest].AbsScore;
+
     // Remove any contenders with a higher absolute score
     for (let i = 0; i < contenders.length; i++) {
-        if (contenders[i].AbsScore > contenders[lowest].AbsScore) {
+        if (contenders[i].AbsScore > lowestScore) {
             contenders.splice(i, 1);
             i--;
         }
     }
 
-    /*
-    // CONDITION 2: The largest hand wins
-    let highest = 0;
+    
 
-    // Find the highest hand size
+    // CONDITION 2: The largest hand wins
+    let largest = 0;
+
+    // Find the largest hand size
     for (let i = 1; i < contenders.length; i++) {
-        if (contenders[i].HandSize > contenders[highest].HandSize) highest = i;
+        if (contenders[i].HandSize > contenders[largest].HandSize) largest = i;
     }
+
+    let largestHand = contenders[largest].HandSize;
 
     // Remove any contenders with a lower hand size
     for (let i = 0; i < contenders.length; i++) {
-        if (contenders[i].HandSize < contenders[highest].HandSize) {
+        if (contenders[i].HandSize < largestHand) {
             contenders.splice(i, 1);
             i--;
         }  
     }
-    */
 
     // CONDITION 3: A positive score beats a negative one
+    let positive = 0;
+
+    // If a number is positive, it will become the positive check - otherwise this will be a negative number if all are
+    for (let i = 1; i < contenders.length; i++) {
+        if (contenders[i].FinalScore > contenders[positive].FinalScore) positive = i;
+    }
+
+    let mostPositive = contenders[positive].FinalScore;
+
+    // Remove any contenders with less positivity than the control
+    for (let i = 0; i < contenders.length; i++) {
+        if (contenders[i].FinalScore < mostPositive) {
+            contenders.splice(i, 1);
+            i--;
+        }  
+    }
 
     // CONDITION 4: Specific hand combinations are better than others
     
 
-    //return contenders[0].PlayerID;
-    return contenders;
+    return contenders[0];
+    //return contenders;
 }
 
 function endGame() {
-    let finalScores = new Array();
-    let absScores = new Array();
+    let winner = getWinner();
 
-    // Determine winner via game conditions - be sure to ignore junked players
-    for (let i = 0; i < playerCount; i++) {
-        let playerScore = 0;
-
-        for (let x = 0; x < players[i].Hand.length; x++) {
-            let temp = players[i].Hand[x].Value;
-
-            playerScore += parseFloat(temp);
-        }
-
-        // Give players an impossibly high score if they're out of the game
-        // TODO: When side pots are implemented, ensure those are accounted for
-        if (players[i].HasJunked === true || players[i].IsOut === true) {
-            playerScore = 1000;
-        }
-
-        // Store the final scores
-        finalScores.push(playerScore);
-
-        // Store the final score in absolute numbers
-        absScores.push(Math.abs(playerScore));
-    }
-
-    function getLowest(a) {
-        let lowest = 0;
-        for (let i = 1; i < a.length; i++) {
-            if (a[i] < a[lowest]) lowest = i;
-        }
-        return lowest;
-    }
-
-    function getHighest(a) {
-        let highest = 0;
-        for (let i = 1; i < a.length; i++) {
-            if (a[i] > a[highest]) highest = i;
-        }
-        return highest;
-    }
-    
-    // Get the lowest possible score
-    let lowestScoreIndex = getLowest(absScores);
-
-    // Get an array of all scroes with that same value
-    let contenders = getAllIndexes(absScores, absScores[lowestScoreIndex]);
-
-    console.log("Final scores: " + finalScores);
-    console.log("Initial contenders: " + contenders);
-
-    let winner;
-
-    // Check to see if that array has multiple scores, if it doesn't declare a winner immediately
-    if (contenders.length > 1) {
-        // If there are multiple, make a list of all their handsizes
-        let handSizes = [];
-
-        for (let i = 0; i < contenders.length; i++) {
-            handSizes.push(players[contenders[i]].Hand.length);
-        }
-
-        console.log("Winner hand sizes: " + handSizes);
-
-        // Get the highest hand size from that list
-        let highestHandContender = contenders[getHighest(handSizes)];
-
-        console.log("Highest hand size index: " + highestHandContender);
-
-        // Remove any contenders with a lower hand size than that
-        for (let x = 0; x < contenders.length; x++) {
-            if (players[contenders[x]].Hand.length < players[highestHandContender].Hand.length) {
-                contenders.splice(x, 1);
-            }
-        }
-
-        console.log("New list of contenders: " + contenders);
-
-        if (contenders.length > 1) {
-            
-            // CONTINUE FROM HERE
-            winner = contenders[0];
-        } else {
-            winner = contenders[0];
-        }
-    } else {
-        winner = contenders[0];
-    }
-
-    //let winner = getLowest(absScores);
-
-    alert(`Game over! Final Scores: ${finalScores}. The winner is Player ${winner + 1}!`);
+    alert(`Game over! The winner is Player ${winner.PlayerID + 1}!`);
 
     // Assign winnings to the winning player
-    players[winner].Credits += gamePot;
+    players[winner.PlayerID].Credits += gamePot;
 
     // If a player gets Sabacc, reset give them the winnings and reset the sabacc pot
-    if (finalScores[winner] === 0) {
-        players[winner].Credits += sabaccPot;
+    if (winner.FinalScore === 0) {
+        players[winner.PlayerID].Credits += sabaccPot;
         sabaccPot = 0;
     }
 
