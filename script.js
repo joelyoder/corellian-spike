@@ -233,8 +233,34 @@ function getWinner() {
     }
 
     // Compare all of the hands to determine the best rank
-    // Check to make sure there are no ties before assigning a winner
-    // If none of the players have a high enough rank, run resolveTies()
+    for (let i = 0; i < contenders.length; i++) {
+        let highestRank = 0;
+
+        // Find the highest ranking hand(s)
+        for (let i = 1; i < contenders.length; i++) {
+            if (contenders[i].HandRank > contenders[highestRank].HandRank) highestRank = i;
+        }
+
+        // Remove any contenders with a lower ranked hand
+        for (let i = 0; i < contenders.length; i++) {
+            if (contenders[i].HandRank < highestRank) {
+                contenders.splice(i, 1);
+                i--;
+            }  
+        }
+
+        // If there are multiple players without a high enough rank, run resolveTies()
+        if ((contenders.length > 1) && (contenders[highestRank].HandRank > 11)) {
+            resolveTies();
+        }
+
+        // TODO:Resolve any remaining ties if there are multiple winners with a named sabacc
+
+        // TODO:If all else fails, blind draw until you have a tiebreaker
+    }
+
+    //return contenders[0];
+    return contenders;
 
     function rankHands() {
         for (let i = 0; i < contenders.length; i++) {
@@ -362,25 +388,22 @@ function getWinner() {
         // TODO:Highest total value of all positive cards
 
         // TODO:Highest single positive card value
+
+        // TODO:If all else fails, blind draw until you have a tiebreaker
     }
-
-    // If all else fails, the rules say that a blind draw should be the tiebreaker.
-
-    //return contenders[0];
-    return contenders;
 }
 
 function endGame() {
     let winner = getWinner();
 
-    alert(`Game over! The winner is Player ${winner.PlayerID + 1}!`);
+    alert(`Game over! The winner is Player ${winner[0].PlayerID + 1}!`);
 
     // Assign winnings to the winning player
-    players[winner.PlayerID].Credits += gamePot;
+    players[winner[0].PlayerID].Credits += gamePot;
 
     // If a player gets Sabacc, reset give them the winnings and reset the sabacc pot
     if (winner.FinalScore === 0) {
-        players[winner.PlayerID].Credits += sabaccPot;
+        players[winner[0].PlayerID].Credits += sabaccPot;
         sabaccPot = 0;
     }
 
